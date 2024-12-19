@@ -16,66 +16,16 @@ struct Student
     int program;//程序设计成绩*10
     int physical;//体育成绩*10
 };
-bool cmp_english(struct Student a,struct Student b)
-{
-    return a.english<b.english;
-}
-bool cmp_math(struct Student a,struct Student b)
-{
-    return a.math<b.math;
-}
 class Manager
 {
     private:
-    static struct Student student[STUDENT_NUMBER];
-    static int num;//表示学生的数量
+    struct Student student[STUDENT_NUMBER];
+    int num;//表示学生的数量
     void swap(struct Student &a,struct Student &b)
     {
         auto c=a;
         a=b;
         b=c;
-    }
-    void read(char filename[])
-    {
-        FILE *fp=fopen(filename,"r+");
-        if(fp==NULL)
-        {
-            printf("failed to open the file\n");
-            exit(0);
-        }
-        fscanf(fp,"%d",&num);
-        for(int i=1;i<=num;++i)
-        {
-            fscanf(fp,"%s",student[i].name);
-            fscanf(fp,"%s",student[i].id);
-            fscanf(fp,"%d",&student[i].sex);
-            fscanf(fp,"%d",&student[i].english);
-            fscanf(fp,"%d",&student[i].math);
-            fscanf(fp,"%d",&student[i].program);
-            fscanf(fp,"%d",&student[i].physical);
-        }
-        fclose(fp);
-    }
-    void write(char filename[])
-    {
-        FILE *fp=fopen(filename,"r+");
-        if(fp==NULL)
-        {
-            printf("failed to open the file\n");
-            exit(0);
-        }
-        fprintf(fp,"%d ",num);
-        for(int i=1;i<=num;++i)
-        {
-            fprintf(fp,"%s ",student[i].name);
-            fprintf(fp,"%s ",student[i].id);
-            fprintf(fp,"%d ",student[i].sex);
-            fprintf(fp,"%d ",student[i].english);
-            fprintf(fp,"%d ",student[i].math);
-            fprintf(fp,"%d ",student[i].program);
-            fprintf(fp,"%d ",student[i].physical);
-        }
-        fclose(fp);
     }
     int query_name(char name[])
     {
@@ -124,6 +74,48 @@ class Manager
         memset(student,0,sizeof student);
         char filename[]="student.dat";
         write(filename);
+    }
+    void read(char filename[])
+    {
+        FILE *fp=fopen(filename,"r+");
+        if(fp==NULL)
+        {
+            printf("failed to open the file\n");
+            exit(0);
+        }
+        fscanf(fp,"%d",&num);
+        for(int i=1;i<=num;++i)
+        {
+            fscanf(fp,"%s",student[i].name);
+            fscanf(fp,"%s",student[i].id);
+            fscanf(fp,"%d",&student[i].sex);
+            fscanf(fp,"%d",&student[i].english);
+            fscanf(fp,"%d",&student[i].math);
+            fscanf(fp,"%d",&student[i].program);
+            fscanf(fp,"%d",&student[i].physical);
+        }
+        fclose(fp);
+    }
+    void write(char filename[])
+    {
+        FILE *fp=fopen(filename,"w");
+        if(fp==NULL)
+        {
+            printf("failed to open the file\n");
+            exit(0);
+        }
+        fprintf(fp,"%d\n",num);
+        for(int i=1;i<=num;++i)
+        {
+            fprintf(fp,"%s ",student[i].name);
+            fprintf(fp,"%s ",student[i].id);
+            fprintf(fp,"%d ",student[i].sex);
+            fprintf(fp,"%d ",student[i].english);
+            fprintf(fp,"%d ",student[i].math);
+            fprintf(fp,"%d ",student[i].program);
+            fprintf(fp,"%d\n",student[i].physical);
+        }
+        fclose(fp);
     }
     void sort(Subject subject,bool rules)
     //采用冒泡排序,rules=1
@@ -205,30 +197,94 @@ class Manager
     {
         ++num;
         printf("name:");
-        scanf("%s\n",student[num].name);
+        scanf("%s",student[num].name);
         printf("id:");
-        scanf("%s\n",student[num].id);
+        scanf("%s",student[num].id);
         printf("sex(male/female):");
         char sex[10];
-        scanf("%s\n",sex);
+        scanf("%s",sex);
         if(strcmp(sex,"male")==0) student[num].sex=male;
         else student[num].sex=female;
         printf("English_score:");
         double tmp;
-        scanf("%lf\n",&tmp);
+        scanf("%lf",&tmp);
         student[num].english=tmp*10;
         printf("Math_score:");
-        scanf("%lf\n",&tmp);
+        scanf("%lf",&tmp);
         student[num].math=tmp*10;
         printf("Program_score:");
-        scanf("%lf\n",&tmp);
+        scanf("%lf",&tmp);
         student[num].program=tmp*10;
         printf("Physical_score:");
-        scanf("%lf\n",&tmp);
+        scanf("%lf",&tmp);
         student[num].physical=tmp*10;
+        char filename[]="student.dat";
+        write(filename);
     }
 };
+void menu(class Manager *manager)
+{
+    //system("clear");//macOS或linux
+    for(int i=1;i<=30;++i) printf("*");
+    printf("\n1.输入一条记录\n");
+    printf("2.按照学生姓名查询\n");
+    printf("3.按照学生学号查询\n");
+    printf("4.计算班级平均成绩\n");
+    printf("5.按照不同学科排序并生成结果文件\n");
+    for(int i=1;i<=30;++i) printf("*");
+    printf("\n输入选择:");
+    int op;
+    scanf("%d",&op);
+    switch(op)
+    {
+        case 1:manager->create();break;
+        case 2:
+        {
+            char q[100];
+            printf("请输入学生姓名：");
+            scanf("%s",q);
+            manager->query(q,name);
+            break;
+        }
+        case 3:
+        {
+            char q[100];
+            printf("请输入学生学号：");
+            scanf("%s",q);
+            manager->query(q,id);
+            break;
+        }
+        case 4:
+        {
+            manager->average();
+            break;
+        }
+        case 5:
+        {
+            manager->sort(english,1);
+            char filename[100]="English.dat";
+            manager->write(filename);
+            manager->sort(math,1);
+            memcpy(filename,"Math.dat",sizeof "Math.dat");
+            manager->write(filename);
+            manager->sort(program,1);
+            memcpy(filename,"Program.dat",sizeof "Program.dat");
+            manager->write(filename);
+            manager->sort(physical,1);
+            memcpy(filename,"Physical.dat",sizeof "Physical.dat");
+            manager->write(filename);
+            break;
+        }
+        case 6:
+        {
+            delete manager;
+            exit(0);
+        }
+    }
+}
 int main()
 {
-
+    Manager *manager=new Manager;
+    while(1) menu(manager);
+    return 0;
 }
