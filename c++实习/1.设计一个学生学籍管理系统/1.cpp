@@ -71,7 +71,6 @@ class Manager
     }
     ~Manager()
     {
-        memset(student,0,sizeof student);
         char filename[]="student.dat";
         write(filename);
     }
@@ -118,7 +117,7 @@ class Manager
         fclose(fp);
     }
     void sort(Subject subject,bool rules)
-    //采用冒泡排序,rules=1
+    //采用冒泡排序,rules=1降序排序，rules=0升序排序
     {
         for(int j=1;j<=num;++j)
         {
@@ -231,6 +230,7 @@ void menu(class Manager *manager)
     printf("3.按照学生学号查询\n");
     printf("4.计算班级平均成绩\n");
     printf("5.按照不同学科排序并生成结果文件\n");
+    printf("6.退出程序\n");
     for(int i=1;i<=30;++i) printf("*");
     printf("\n输入选择:");
     int op;
@@ -277,6 +277,8 @@ void menu(class Manager *manager)
         }
         case 6:
         {
+            char filename[]="student.dat";
+            manager->write(filename);
             delete manager;
             exit(0);
         }
