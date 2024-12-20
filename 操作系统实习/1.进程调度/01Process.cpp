@@ -485,6 +485,7 @@ namespace os
                 doing_process.pop();
                 --doing.remain;
                 //printf("%c",doing.process_name);
+                printf("第%d-%d秒，执行程序%c,剩余%d/%d\n",time,time+1,doing.process_name,doing.remain,doing.time_serve);
                 ++time;
                 if(!process.empty())
                 {
@@ -500,6 +501,7 @@ namespace os
                 if(doing.remain==0)
                 {
                     ++finished_index;
+                    //printf("第%d-%d秒，执行程序%c,剩余%d/%d\n",time,time+1,doing.process_name,doing.remain,doing.time_serve);
                     finished[finished_index].process_name=doing.process_name;
                     finished[finished_index].time_arrive=doing.time_arrive;
                     finished[finished_index].time_end=time;
@@ -593,7 +595,9 @@ namespace os
                 
                 doing=doing_process.top();
                 doing_process.pop();
-                --doing.remain;++time;
+                printf("第%d-%d秒，执行程序%c,剩余%d/%d\n",time,time+1,doing.process_name,doing.remain,doing.time_serve);
+                --doing.remain;
+                ++time;
                 if(doing.remain==0)
                 {
                     ++finished_index;

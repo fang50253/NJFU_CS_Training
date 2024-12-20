@@ -639,19 +639,19 @@ namespace os
 }
 int main()
 {
-    printf("\n\nThis is RR:\n\n\n");//使用新来进程优先的算法
-    os::RR *rr=new os::RR();
-    rr->conduct();
-    rr->display();
-    rr->display_avergae();
-    delete(rr);
-    printf("\n\n\n");
     printf("\n\nThis is SJF:\n\n\n");//使用新来进程优先的算法
     os::SJF *sjf=new os::SJF();
     sjf->conduct();
     sjf->display();
     sjf->display_avergae();
     delete(sjf);
+    printf("\n\n\n");
+    printf("\n\nThis is RR:\n\n\n");//使用新来进程优先的算法
+    os::RR *rr=new os::RR();
+    rr->conduct();
+    rr->display();
+    rr->display_avergae();
+    delete(rr);
     printf("\n\n\n");
     return 0;
 }
