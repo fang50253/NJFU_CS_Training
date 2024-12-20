@@ -2,6 +2,7 @@
 #include<iostream>
 #include<stdexcept>
 #include<string.h>
+#include<queue>
 #define MAX_PROCESS_NUMBER 100
 namespace fzy
 {
@@ -288,6 +289,7 @@ namespace os
         {
             return time_arrive>W.time_arrive;
         }
+        /*
         bool operator <= (const Process &W) const 
         {
             return time_arrive>=W.time_arrive;
@@ -300,6 +302,7 @@ namespace os
         {
             return time_arrive<=W.time_arrive;
         }
+        */
         Process(char process_name,int time_arrive,int time_serve)
         {
             this->process_name=process_name;
@@ -365,7 +368,7 @@ namespace os
     class SJF
     {
         private:
-        fzy::priority_queue<Process>process;
+        std::priority_queue<Process>process;
         int process_cnt;
         public:
         void read(char filename[])
@@ -373,14 +376,20 @@ namespace os
             FILE *fp=fopen(filename,"r+");
             if(fp==NULL) throw std::runtime_error("open file failed");
             fscanf(fp,"%d",&process_cnt);
+            printf("%d",process_cnt);
             for(int i=1;i<=process_cnt;++i)
             {
                 char process_name;
                 int time_arrive,time_serve;
-                fscanf(fp," %c %d %d",&process_name,&time_arrive,&time_serve);
-                Process tmp={process_name,time_arrive,time_serve};
-                process.push(tmp);
+                fscanf(fp," %c%d%d",&process_name,&time_arrive,&time_serve);
+                
+                Process *tmp=new Process(process_name,time_arrive,time_serve);
+                process.push(*tmp);
+                //printf("i=%d;Read process: %c %d %d\n", i,process_name, time_arrive, time_serve);
+                delete tmp;
+                //printf("i=%d;Read process: %c %d %d\n", i,process_name, time_arrive, time_serve);
             }
+            printf("out");
             fclose(fp);
         }
         SJF()
@@ -396,7 +405,7 @@ namespace os
             int time=0;
             while(!process.empty())
             {
-                fzy::priority_queue<Process_finish>temp;
+                std::priority_queue<Process_finish>temp;
                 while(!process.empty())
                 {
                     auto tmp=process.top();
@@ -446,11 +455,14 @@ namespace os
 }
 int main()
 {
-    //os::SJF *sjf=new os::SJF();
-    //sjf->conduct();
-    //sjf->display();
-    //delete(sjf);
-    fzy::priority_queue<int>que;
+    os::SJF *sjf=new os::SJF();
+    //sjf->read("filename.dat");
+     printf("ok");
+    sjf->conduct();
+   
+    sjf->display();
+    delete(sjf);
+    std::priority_queue<int>que;
     que.push(1);
     que.push(2);
     printf("%d",que.top());
