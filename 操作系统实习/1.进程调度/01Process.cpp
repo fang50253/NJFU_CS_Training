@@ -300,6 +300,24 @@ namespace os
     class Process_finish:public Process
     {
         public:
+        Process_finish(Process a,int time_end,int time_turnaround,double time_turnaround_rights)
+        {
+            this->process_name=a.process_name;
+            this->time_arrive=a.time_arrive;
+            this->time_serve=a.time_serve;
+            this->time_end=time_end;
+            this->time_turnaround=time_turnaround;
+            this->time_turnaround_rights=time_turnaround_rights;
+        }
+        Process_finish()
+        {
+            this->process_name=0;
+            this->time_arrive=0;
+            this->time_end=0;
+            this->time_serve=0;
+            this->time_turnaround=0;
+            this->time_turnaround_rights=0;
+        }
         int time_end;//完成时间
         int time_turnaround;//周转时间
         double time_turnaround_rights;//带权周转时间
@@ -361,18 +379,20 @@ namespace os
             int time=0;
             while(!process.empty())
             {
-                auto cpu=process.top();
+                fzy::priority_queue<Process_finish>temp;
                 while(!process.empty())
                 {
                     auto tmp=process.top();
-                    fzy::priority_queue<Process_finish>temp;
                     if(tmp.time_arrive<time)
                     {
-
-                        //temp.push();
-
+                        Process_finish *insert=new Process_finish(tmp,0,0,0.0);
+                        temp.push(*insert);
+                        process.pop();
+                        delete(insert);
                     }
                 }
+                auto tmp=temp.top();
+                if(tmp.time_arrive<time)//说明程序可以被执行
                 
             }
         }
