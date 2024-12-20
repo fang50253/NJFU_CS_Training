@@ -296,6 +296,18 @@ namespace os
         {
             return time_arrive<=W.time_arrive;
         }
+        Process(char process_name,int time_arrive,int time_serve)
+        {
+            this->process_name=process_name;
+            this->time_arrive=time_arrive;
+            this->time_serve=time_serve;
+        }
+        Process()
+        {
+            this->process_name=0;
+            this->time_arrive=0;
+            this->time_serve=0;
+        }
     };
     class Process_finish:public Process
     {
@@ -355,12 +367,13 @@ namespace os
         void read(char filename[])
         {
             FILE *fp=fopen(filename,"r+");
+            if(fp==NULL) throw std::runtime_error("open file failed");
             fscanf(fp,"%d",&process_cnt);
             for(int i=1;i<=process_cnt;++i)
             {
                 char process_name;
                 int time_arrive,time_serve;
-                fscanf(fp,"%c %d %d",&process_name,&time_arrive,&time_serve);
+                fscanf(fp," %c %d %d",&process_name,&time_arrive,&time_serve);
                 Process tmp={process_name,time_arrive,time_serve};
                 process.push(tmp);
             }
@@ -391,9 +404,29 @@ namespace os
                         delete(insert);
                     }
                 }
-                auto tmp=temp.top();
-                if(tmp.time_arrive<time)//说明程序可以被执行
-                
+                if(!temp.empty())//说明有程序可以被执行
+                {
+                    auto tmp=temp.top();
+                    if(tmp.time_arrive<time)
+                    {
+                        time+=tmp.time_serve;
+                        tmp.time_end=time;
+                        tmp.time_turnaround=time-tmp.time_arrive;
+                        tmp.time_turnaround_rights=1.0*tmp.time_turnaround/tmp.time_serve;
+                        ++finished_index;
+                        finished[finished_index]=tmp;
+                        temp.pop();
+                    }
+                }
+                else ++time;
+                while(!temp.empty())
+                {
+                    auto out=temp.top();
+                    temp.pop();
+                    Process *a=new Process(out.process_name,out.time_arrive,out.time_serve);
+                    process.push(*a);
+                    delete(a);
+                }
             }
         }
         void display()
@@ -409,5 +442,9 @@ namespace os
 }
 int main()
 {
-
+    os::SJF *sjf=new os::SJF();
+    sjf->conduct();
+    sjf->display();
+    delete(sjf);
+    return 0;
 }
