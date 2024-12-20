@@ -8,7 +8,7 @@ namespace fzy
     template<typename T>
     struct queuenode
     {
-        T v;
+        T v=T();
         queuenode<T>* next;
     };
     template<typename T>
@@ -341,14 +341,137 @@ namespace os
         }
     }finished[MAX_PROCESS_NUMBER];
     int finished_index;
+    class Process_remain:public Process
+    {
+        public:
+        int remain;
+        Process_remain(class Process p)
+        {
+            this->process_name=p.process_name;
+            this->time_arrive=p.time_arrive;
+            this->time_serve=p.time_serve;
+            this->remain=p.time_serve;
+        }
+        Process_remain()
+        {
+            this->remain=0;
+        }
+    };
     class RR
+    {
+        private:
+        std::priority_queue<Process>process;
+        fzy::queue<Process_remain>doing_process;
+        int process_cnt;
+        int time;
+        public:
+        void read(char filename[])
+        {
+            FILE *fp=fopen(filename,"r+");
+            if(fp==NULL) throw std::runtime_error("open file failed");
+            fscanf(fp,"%d",&process_cnt);
+            for(int i=1;i<=process_cnt;++i)
+            {
+                char process_name;
+                int time_arrive,time_serve;
+                fscanf(fp," %c%d%d",&process_name,&time_arrive,&time_serve);
+                process.push(Process(process_name,time_arrive,time_serve));
+            }
+            fclose(fp);
+        }
+        RR()
+        {
+            process_cnt=0;
+            finished_index=0;
+            char filename[]="filename.dat";
+            read(filename);
+            memset(finished,0,sizeof finished);
+            finished_index=0;
+        }
+        void conduct()
+        {
+            time=0;
+            Process_remain doing;
+            while(finished_index!=process_cnt)
+            {
+                Process top_process;
+                if(!process.empty())
+                {
+                    top_process=process.top();
+                    if(top_process.time_arrive<=time)
+                    {
+                        process.pop();
+                        doing_process.push(Process_remain(top_process));
+                        //printf("push:%c\n",top_process.process_name);
+                    }
+                }
+                doing=doing_process.front();
+                doing_process.pop();
+                --doing.remain;
+                //printf("%c",doing.process_name);
+                ++time;
+                if(!process.empty())
+                {
+                    top_process=process.top();
+                    while(top_process.time_arrive<=time)
+                    {
+                        process.pop();
+                        doing_process.push(Process_remain(top_process));
+                        top_process=process.top();
+                        if(process.empty()) break;
+                    }
+                }
+                if(doing.remain==0)
+                {
+                    ++finished_index;
+                    finished[finished_index].process_name=doing.process_name;
+                    finished[finished_index].time_arrive=doing.time_arrive;
+                    finished[finished_index].time_end=time;
+                    finished[finished_index].time_serve=doing.time_serve;
+                    finished[finished_index].time_turnaround=time-doing.time_arrive;
+                    finished[finished_index].time_turnaround_rights=1.0*finished[finished_index].time_turnaround/doing.time_serve;
+                }
+                else doing_process.push(doing);
+                
+            }
+
+        }
+        void display()
+        {
+            printf("Process name\t");
+            printf("Finished time\t");
+            printf("Turnaround time\t");
+            printf("Weighted turnaround time\t\n");
+            for(int i=1;i<=finished_index;++i)
+            {
+                printf("|\t%c\t|\t",finished[i].process_name);//输出进程名称
+                printf("%d\t|\t",finished[i].time_end);//输出进程完成时间
+                printf("%d\t|\t",finished[i].time_turnaround);//周转时间
+                printf("%.2lf\t|\n",finished[i].time_turnaround_rights);//带权周转时间
+            }
+        }
+        void display_avergae()
+        {
+            double average_time_turnaround=0;
+            double average_time_turnaround_rights=0;
+            for(int i=1;i<=finished_index;++i)
+            {
+                average_time_turnaround+=finished[i].time_turnaround;
+                average_time_turnaround_rights+=finished[i].time_turnaround_rights;
+            }
+            average_time_turnaround/=finished_index;
+            average_time_turnaround_rights/=finished_index;
+            printf("avergae turnaround time=%.2lf\n",average_time_turnaround);
+            printf("average weighted turnaround time=%.2lf",average_time_turnaround_rights);
+        }
+    };
+    class SJF
     {
         private:
 
         public:
-
     };
-    class SJF
+    class SPF
     {
         private:
         std::priority_queue<Process>process;
@@ -376,7 +499,7 @@ namespace os
             //printf("out");
             fclose(fp);
         }
-        SJF()
+        SPF()
         {
             process_cnt=0;
             char filename[]="filename.dat";
@@ -394,7 +517,7 @@ namespace os
                 while(!process.empty())
                 {
                     auto tmp=process.top();
-                    if(tmp.time_arrive<time)
+                    if(tmp.time_arrive<=time)
                     {
                         Process_finish *insert=new Process_finish(tmp,0,0,0.0);
                         temp.push(*insert);
@@ -406,7 +529,7 @@ namespace os
                 if(!temp.empty())//说明有程序可以被执行
                 {
                     auto tmp=temp.top();
-                    if(tmp.time_arrive<time)
+                    if(tmp.time_arrive<=time)
                     {
                         time+=tmp.time_serve;
                         tmp.time_end=time;
@@ -417,7 +540,11 @@ namespace os
                         temp.pop();
                     }
                 }
-                else ++time;
+                else 
+                {
+                    ++time;
+                    printf("?");
+                }
                 while(!temp.empty())
                 {
                     auto out=temp.top();
@@ -460,12 +587,19 @@ namespace os
 }
 int main()
 {
-    printf("\n\nThis is SJF:\n\n\n");
-    os::SJF *sjf=new os::SJF();
-    sjf->conduct();
-    sjf->display();
-    sjf->display_avergae();
-    delete(sjf);
+    printf("\n\nThis is SPF:\n\n\n");
+    os::SPF *spf=new os::SPF();
+    spf->conduct();
+    spf->display();
+    spf->display_avergae();
+    delete spf;
+    printf("\n\n\n");
+    printf("\n\nThis is RR:\n\n\n");//使用新来进程优先的算法
+    os::RR *rr=new os::RR();
+    rr->conduct();
+    rr->display();
+    rr->display_avergae();
+    delete(rr);
     printf("\n\n\n");
     return 0;
 }
