@@ -224,23 +224,15 @@ namespace fzy
     {
         ++node_cnt;
         priority_queue_node<T>*new_node = new priority_queue_node<T>{value, nullptr, nullptr, nullptr};
-
         if (!root) 
         {
             root = new_node;
             return;
         }
-
-        // 找到插入节点的父节点
         priority_queue_node<T>*last_parent = find_last();
         new_node->parent = last_parent;
-
-        if (!last_parent->lchild)
-            last_parent->lchild = new_node;
-        else
-            last_parent->rchild = new_node;
-
-        // 调整堆
+        if (!last_parent->lchild) last_parent->lchild = new_node;
+        else last_parent->rchild = new_node;
         up(new_node);
     }
     void pop()
@@ -365,7 +357,7 @@ namespace os
     class SJF
     {
         private:
-        fzy::priority_queue<Process>process;
+        std::priority_queue<Process>process;
         int process_cnt;
         public:
         void read(char filename[])
@@ -373,14 +365,21 @@ namespace os
             FILE *fp=fopen(filename,"r+");
             if(fp==NULL) throw std::runtime_error("open file failed");
             fscanf(fp,"%d",&process_cnt);
+            //printf("%d",process_cnt);
             for(int i=1;i<=process_cnt;++i)
             {
                 char process_name;
                 int time_arrive,time_serve;
-                fscanf(fp," %c %d %d",&process_name,&time_arrive,&time_serve);
-                Process tmp={process_name,time_arrive,time_serve};
-                process.push(tmp);
+                fscanf(fp," %c%d%d",&process_name,&time_arrive,&time_serve);
+                
+                Process *tmp;
+                tmp=new Process(process_name,time_arrive,time_serve);
+                process.push(*tmp);
+                //printf("i=%d;Read process: %c %d %d\n", i,process_name, time_arrive, time_serve);
+                delete tmp;
+                //printf("i=%d;Read process: %c %d %d\n", i,process_name, time_arrive, time_serve);
             }
+            //printf("out");
             fclose(fp);
         }
         SJF()
@@ -396,7 +395,8 @@ namespace os
             int time=0;
             while(!process.empty())
             {
-                fzy::priority_queue<Process_finish>temp;
+                //printf("time:%d",time);
+                std::priority_queue<Process_finish>temp;
                 while(!process.empty())
                 {
                     auto tmp=process.top();
@@ -407,6 +407,7 @@ namespace os
                         process.pop();
                         delete(insert);
                     }
+                    else break;
                 }
                 if(!temp.empty())//说明有程序可以被执行
                 {
@@ -437,6 +438,7 @@ namespace os
         {
             for(int i=1;i<=finished_index;++i)
             {
+                printf("%c\t",finished[i].process_name);//输出进程名称
                 printf("%d\t",finished[i].time_end);//输出进程完成时间
                 printf("%d\t",finished[i].time_turnaround);//周转时间
                 printf("%.2lf\t\n",finished[i].time_turnaround_rights);//带权周转时间
@@ -446,13 +448,9 @@ namespace os
 }
 int main()
 {
-    //os::SJF *sjf=new os::SJF();
-    //sjf->conduct();
-    //sjf->display();
-    //delete(sjf);
-    fzy::priority_queue<int>que;
-    que.push(1);
-    que.push(2);
-    printf("%d",que.top());
+    os::SJF *sjf=new os::SJF();
+    sjf->conduct();
+    sjf->display();
+    delete(sjf);
     return 0;
 }

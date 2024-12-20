@@ -289,7 +289,6 @@ namespace os
         {
             return time_arrive>W.time_arrive;
         }
-        /*
         bool operator <= (const Process &W) const 
         {
             return time_arrive>=W.time_arrive;
@@ -302,7 +301,6 @@ namespace os
         {
             return time_arrive<=W.time_arrive;
         }
-        */
         Process(char process_name,int time_arrive,int time_serve)
         {
             this->process_name=process_name;
@@ -376,20 +374,21 @@ namespace os
             FILE *fp=fopen(filename,"r+");
             if(fp==NULL) throw std::runtime_error("open file failed");
             fscanf(fp,"%d",&process_cnt);
-            printf("%d",process_cnt);
+            //printf("%d",process_cnt);
             for(int i=1;i<=process_cnt;++i)
             {
                 char process_name;
                 int time_arrive,time_serve;
                 fscanf(fp," %c%d%d",&process_name,&time_arrive,&time_serve);
                 
-                Process *tmp=new Process(process_name,time_arrive,time_serve);
+                Process *tmp;
+                tmp=new Process(process_name,time_arrive,time_serve);
                 process.push(*tmp);
                 //printf("i=%d;Read process: %c %d %d\n", i,process_name, time_arrive, time_serve);
                 delete tmp;
                 //printf("i=%d;Read process: %c %d %d\n", i,process_name, time_arrive, time_serve);
             }
-            printf("out");
+            //printf("out");
             fclose(fp);
         }
         SJF()
@@ -405,6 +404,7 @@ namespace os
             int time=0;
             while(!process.empty())
             {
+                //printf("time:%d",time);
                 std::priority_queue<Process_finish>temp;
                 while(!process.empty())
                 {
@@ -416,6 +416,7 @@ namespace os
                         process.pop();
                         delete(insert);
                     }
+                    else break;
                 }
                 if(!temp.empty())//说明有程序可以被执行
                 {
@@ -446,6 +447,7 @@ namespace os
         {
             for(int i=1;i<=finished_index;++i)
             {
+                printf("%c\t",finished[i].process_name);//输出进程名称
                 printf("%d\t",finished[i].time_end);//输出进程完成时间
                 printf("%d\t",finished[i].time_turnaround);//周转时间
                 printf("%.2lf\t\n",finished[i].time_turnaround_rights);//带权周转时间
@@ -456,15 +458,8 @@ namespace os
 int main()
 {
     os::SJF *sjf=new os::SJF();
-    //sjf->read("filename.dat");
-     printf("ok");
     sjf->conduct();
-   
     sjf->display();
     delete(sjf);
-    std::priority_queue<int>que;
-    que.push(1);
-    que.push(2);
-    printf("%d",que.top());
     return 0;
 }
