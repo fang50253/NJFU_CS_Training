@@ -2,9 +2,28 @@
 #include<iostream>
 #include<stdexcept>
 #include<string.h>
+#include<queue>
 #define MAX_PROCESS_NUMBER 100
 namespace fzy
 {
+    template<class T>
+    class Less
+    {
+    public:
+        bool operator()(const T& x, const T& y)
+        {
+            return x < y;
+        }
+    };
+    template<class T>
+    class Greater
+    {
+    public:
+        bool operator()(const T& x, const T& y)
+        {
+            return x > y;
+        }
+    };
     template<typename T>
     struct queuenode
     {
@@ -154,113 +173,154 @@ namespace fzy
         }
     };
     template<typename T>
-    struct priority_queue_node
-    {
-        T v;
-        priority_queue_node<T> *parent;
-        priority_queue_node<T> *lchild;
-        priority_queue_node<T> *rchild;
+    class priority_queue{
+    public:
+        priority_queue()\
+        :size_of_priority_queue(0), capacity(MAX_PROCESS_NUMBER), compare(&_compare)
+        {
+            pt = new T[capacity];
+            if(nullptr==pt) throw std::runtime_error("malloc failed");
+        }
+        priority_queue(int val)\
+            :size_of_priority_queue(0), capacity(MAX_PROCESS_NUMBER), compare(&_compare){
+            while( capacity < val) capacity *= 2;
+            pt = new T[capacity];//申请空间
+            if( nullptr == pt) throw std::runtime_error("malloc failed");
+            return;
+        }
+        priority_queue(bool (*cmp)(T&,T&))\
+            :size_of_priority_queue(0), capacity(MAX_PROCESS_NUMBER), compare(cmp)
+            {
+            pt = new T[capacity];
+            if( nullptr == pt )throw std::runtime_error("malloc failed");
+            return;
+        }
+        priority_queue( int val, bool (*cmp)(T&,T&) )\
+            :size_of_priority_queue(0), capacity(MAX_PROCESS_NUMBER), compare(cmp){
+            while( capacity < val) capacity *= 2;
+            pt = new T[capacity];
+            if( nullptr == pt ) throw std::runtime_error("malloc failed");
+            return;
+        }
+        ~priority_queue()
+        {
+            if( nullptr != pt){
+                delete[] pt;
+                pt = nullptr;
+            }
+        }
+        bool empty()
+        {
+            return size_of_priority_queue==0;
+        }
+        bool push(const T& t)
+        {
+            T *ptt = pt;
+            if( size_of_priority_queue == capacity )
+            {
+                capacity *= 2;
+                pt = new T[capacity];
+                if( nullptr == pt )
+                {
+                    pt = ptt;
+                    capacity /= 2;
+                    return false;
+                }
+                obj_cpy(pt, ptt, size_of_priority_queue);
+                delete[] ptt;
+            }
+            pt[size_of_priority_queue++] = t;
+            heap_up();
+            return true;
+        }
+
+        bool pop(){
+            if(size_of_priority_queue==0) return false;
+            if(size_of_priority_queue==1)
+            {
+                size_of_priority_queue = 0;
+                return true;
+            }
+            pt[0] = pt[size_of_priority_queue-1];
+            size_of_priority_queue--;
+            heap_down();
+            return true;
+        }
+        T top()
+        {
+            if(size_of_priority_queue<0) throw std::runtime_error("queue empty");
+            return pt[0];//返回队头元素
+        }
+        bool is_empty_pl()const
+        {
+            return 0==size_of_priority_queue;//返回队是否为空
+        }
+        int get_size()const
+        {
+            return size_of_priority_queue;//返回队元素个数
+        }
+        int get_capacity()const
+        {
+            return capacity;//返回队当前容量应该为2的n次方
+        }
+    private:
+        void heap_up();
+        void heap_down();
+        void obj_cpy(T* dest, const T* sour, int n)
+        {
+            for(int i=0;i<n;i++) dest[i]=sour[i];
+        }
+        bool static _compare(T &t1, T &t2)
+        {
+            return t1 < t2;
+        }
+    private:
+        T     *pt;//数据
+        int    size_of_priority_queue;// 元素个数
+        int    capacity;//队容量
+        bool (*compare)(T&,T&);//比较函数
+
     };
     template<typename T>
-    class priority_queue{
-    private:
-    priority_queue_node<T>*root;
-    int node_cnt;
-    void swap(T &a,T &b)
+    void priority_queue<T>::heap_up()
     {
-        T c=a;
-        a=b;
-        b=c;
-    }
-    void up(priority_queue_node<T>*node)
-    {
-        while(node&&node->parent&&node->v>node->parent->v) 
-        {
-            swap(node->v,node->parent->v);
-            node=node->parent;
+        T temp;
+        int itr = size_of_priority_queue-1;
+        while( itr > 0 ){
+            if( (compare(pt[itr/2], pt[itr])) )
+            {
+                temp = pt[itr];
+                pt[itr] = pt[itr/2];
+                pt[itr/2] = temp;
+                itr = itr/2;
+                continue;
+            }
+            break;
         }
+        return;
     }
-    void down(priority_queue_node<T>*node)
-    {
-        while (node && node->lchild) 
+    template<typename T>
+    void priority_queue<T>::heap_down(){
+        //当对头出栈韩，需要将队尾数据移动到队头，向下重新调整堆
+        T temp;
+        int pitr = 0, citr;
+        while( pitr <= size_of_priority_queue/2 -1 )
         {
-            priority_queue_node<T>*largest=node->lchild;
-            if(node->rchild&&node->rchild->v>largest->v) largest=node->rchild;
-            if(node->v>=largest->v) break;
-            swap(node->v,largest->v);
-            node=largest;
+            citr = pitr * 2 + 1;
+            if( citr + 1 < size_of_priority_queue && compare(pt[citr], pt[citr+1]))
+                citr ++;
+            if( (compare(pt[pitr], pt[citr])) )
+            {
+                temp = pt[citr];
+                pt[citr] = pt[pitr];
+                pt[pitr] = temp;
+                pitr = citr;//继续将pitr指向孩子节点，进行下一次的比较
+                continue;
+            }
+            break;//如果处在对的位置，直接结束，不需要继续比较下去了
         }
+        return;
     }
-    priority_queue_node<T>*find_last() 
-    {
-        if(!root) return nullptr;
-        int path=node_cnt-1;  // 使用 0-based 编号
-        priority_queue_node<T>*cur = root;
-        while (path>0) 
-        {
-            if(path&1) cur=cur->rchild;
-            else cur=cur->lchild;
-            path>>=1;
-        }
-        return cur;
-    }
-    public:
-    priority_queue()
-    {
-        root=NULL;
-        node_cnt=0;
-    }
-    ~priority_queue()
-    {
-        while(!empty()) pop();
-    }
-    void push(T value)
-    {
-        ++node_cnt;
-        priority_queue_node<T>*new_node=new priority_queue_node<T>{value,nullptr,nullptr, nullptr};
-        if (!root) 
-        {
-            root = new_node;
-            return;
-        }
-        priority_queue_node<T>*last_parent=find_last();
-        new_node->parent=last_parent;
-        if(!last_parent->lchild) last_parent->lchild=new_node;
-        else last_parent->rchild=new_node;
-        up(new_node);
-    }
-    void pop()
-    {
-        if(empty())throw std::runtime_error("Priority queue is empty.");
-        if(node_cnt==1)
-        {
-            delete root;
-            root=nullptr;
-            --node_cnt;
-            return;
-        }
-        priority_queue_node<T>*last=find_last();
-        swap(root->v,last->v);
-        if(last->parent->rchild==last)last->parent->rchild=nullptr;
-        else last->parent->lchild=nullptr;
-        delete last;
-        --node_cnt;
-        down(root);
-    }
-    T top()
-    {
-        if(empty())throw std::runtime_error("Priority queue is empty.");
-        return root->v;
-    }
-    bool empty()
-    {
-        return node_cnt==0;
-    }
-    int size()
-    {
-        return node_cnt;
-    }
-    };
 }
 namespace os
 {
@@ -360,7 +420,7 @@ namespace os
     class RR
     {
         private:
-        std::priority_queue<Process>process;
+        fzy::priority_queue<Process>process;
         fzy::queue<Process_remain>doing_process;
         int process_cnt;
         int time;
@@ -587,6 +647,11 @@ namespace os
 }
 int main()
 {
+    fzy::priority_queue<int>e;
+    e.push(1);
+    e.push(2);
+    e.push(-1);
+    printf("%d",e.top());
     printf("\n\nThis is SPF:\n\n\n");
     os::SPF *spf=new os::SPF();
     spf->conduct();
