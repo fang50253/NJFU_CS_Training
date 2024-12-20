@@ -174,39 +174,33 @@ namespace fzy
     }
     void up(priority_queue_node<T>*node)
     {
-        while (node && node->parent && node->v > node->parent->v) 
+        while(node&&node->parent&&node->v>node->parent->v) 
         {
-            swap(node->v, node->parent->v);
-            node = node->parent;
+            swap(node->v,node->parent->v);
+            node=node->parent;
         }
     }
     void down(priority_queue_node<T>*node)
     {
         while (node && node->lchild) 
         {
-            priority_queue_node<T>*largest = node->lchild;
-
-            if (node->rchild && node->rchild->v > largest->v)
-                largest = node->rchild;
-
-            if (node->v >= largest->v) break;
-
-            swap(node->v, largest->v);
-            node = largest;
+            priority_queue_node<T>*largest=node->lchild;
+            if(node->rchild&&node->rchild->v>largest->v) largest=node->rchild;
+            if(node->v>=largest->v) break;
+            swap(node->v,largest->v);
+            node=largest;
         }
     }
     priority_queue_node<T>*find_last() 
     {
-        if (!root) return nullptr;
-
-        int path = node_cnt - 1;  // 使用 0-based 编号
+        if(!root) return nullptr;
+        int path=node_cnt-1;  // 使用 0-based 编号
         priority_queue_node<T>*cur = root;
-
-        while (path > 0) 
+        while (path>0) 
         {
-            if (path & 1) cur = cur->rchild;
-            else cur = cur->lchild;
-            path >>= 1;
+            if(path&1) cur=cur->rchild;
+            else cur=cur->lchild;
+            path>>=1;
         }
         return cur;
     }
@@ -223,16 +217,16 @@ namespace fzy
     void push(T value)
     {
         ++node_cnt;
-        priority_queue_node<T>*new_node = new priority_queue_node<T>{value, nullptr, nullptr, nullptr};
+        priority_queue_node<T>*new_node=new priority_queue_node<T>{value,nullptr,nullptr, nullptr};
         if (!root) 
         {
             root = new_node;
             return;
         }
-        priority_queue_node<T>*last_parent = find_last();
-        new_node->parent = last_parent;
-        if (!last_parent->lchild) last_parent->lchild = new_node;
-        else last_parent->rchild = new_node;
+        priority_queue_node<T>*last_parent=find_last();
+        new_node->parent=last_parent;
+        if(!last_parent->lchild) last_parent->lchild=new_node;
+        else last_parent->rchild=new_node;
         up(new_node);
     }
     void pop()
@@ -436,21 +430,42 @@ namespace os
         }
         void display()
         {
+            printf("Process name\t");
+            printf("Finished time\t");
+            printf("Turnaround time\t");
+            printf("Weighted turnaround time\t\n");
             for(int i=1;i<=finished_index;++i)
             {
-                printf("%c\t",finished[i].process_name);//输出进程名称
-                printf("%d\t",finished[i].time_end);//输出进程完成时间
-                printf("%d\t",finished[i].time_turnaround);//周转时间
-                printf("%.2lf\t\n",finished[i].time_turnaround_rights);//带权周转时间
+                printf("|\t%c\t|\t",finished[i].process_name);//输出进程名称
+                printf("%d\t|\t",finished[i].time_end);//输出进程完成时间
+                printf("%d\t|\t",finished[i].time_turnaround);//周转时间
+                printf("%.2lf\t|\n",finished[i].time_turnaround_rights);//带权周转时间
             }
+        }
+        void display_avergae()
+        {
+            double average_time_turnaround=0;
+            double average_time_turnaround_rights=0;
+            for(int i=1;i<=finished_index;++i)
+            {
+                average_time_turnaround+=finished[i].time_turnaround;
+                average_time_turnaround_rights+=finished[i].time_turnaround_rights;
+            }
+            average_time_turnaround/=finished_index;
+            average_time_turnaround_rights/=finished_index;
+            printf("avergae turnaround time=%.2lf\n",average_time_turnaround);
+            printf("average weighted turnaround time=%.2lf",average_time_turnaround_rights);
         }
     };
 }
 int main()
 {
+    printf("\n\nThis is SJF:\n\n\n");
     os::SJF *sjf=new os::SJF();
     sjf->conduct();
     sjf->display();
+    sjf->display_avergae();
     delete(sjf);
+    printf("\n\n\n");
     return 0;
 }
