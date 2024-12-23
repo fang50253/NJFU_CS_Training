@@ -244,6 +244,7 @@ class Line
 };
 int main()
 {
+    printf("\n");
     Line *line=new Line("aloi","aloi_full.txt","aloi_lable.txt");
     int cnt=0;
     clock_t start=clock();
@@ -265,6 +266,6 @@ int main()
     delete line;
     end=clock();
     cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
-    printf("Compare_Process_Time%.2fseconds\n", cpu_time_used);
+    printf("Compare_Process_Time%.2fseconds\n\n", cpu_time_used);
     return 0;
 }
