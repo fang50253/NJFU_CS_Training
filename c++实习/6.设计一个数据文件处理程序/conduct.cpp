@@ -32,10 +32,10 @@ class Line
         int vector_position;//记录向量的位置
         memset(vectors,0,sizeof vectors);
         line[linelength-1]=' ';
-        line[linelength]='0';
-        line[linelength+1]=':';
-        line[linelength+2]='0';
-        line[linelength+3]='\0';
+        line[linelength]='\0';
+        //line[linelength+1]=':';
+        //line[linelength+2]='0';
+        //line[linelength+3]='\0';
         //printf("%s",line);
         //exit(0);
         linelength=strlen(line);
