@@ -2,14 +2,17 @@
 #include<string.h>
 #include<time.h>
 #include<stdlib.h>
-const int LINE_MAX=2e5;
+const int LINE_MAX=1e5;
 const int VECTOR_MAX=129;
+const int SAMPLE_MAX=1e3+10;
 class Line
 {
     private:
     char line[LINE_MAX];
     int vectors[VECTOR_MAX];
+    int sample_cnt[SAMPLE_MAX];
     FILE *fp,*wfp,*lfp;
+    int sample_num;
     int eigenvector;//记录特征向量，也就是第一个参数的值
     void read_file(const char filename[])
     {
@@ -22,26 +25,23 @@ class Line
         lfp=fopen(lable,"w");
         if(wfp==nullptr||lfp==nullptr) printf("File open failed\n");
     }
+    void rtrim(char *str) 
+    {
+        size_t len=strlen(str);
+        while(len>0&&(str[len-1]==' '||str[len-1]=='\n')) str[--len]='\0';
+    }
     public:
     bool read_one_line()//读取成功返回1，否则返回0
     {
+        ++sample_num;
         fgets(line,sizeof line,fp);
         int linelength=strlen(line);
         int tmp=0,tmp_cnt=0;
-        //printf("size:%d\n",linelength);
         int vector_position;//记录向量的位置
         memset(vectors,0,sizeof vectors);
         line[linelength-1]=' ';
         line[linelength]='\0';
-        //line[linelength+1]=':';
-        //line[linelength+2]='0';
-        //line[linelength+3]='\0';
-        //printf("%s",line);
-        //exit(0);
         linelength=strlen(line);
-        //printf("size:%d\n",linelength);
-        //printf("%s",line);
-        //exit(0);
         for(int i=0;i<linelength+1;++i)
         {
             if(line[i]!=' '&&line[i]!=':')
@@ -51,18 +51,13 @@ class Line
             else if(line[i]==' '&&tmp_cnt==0)
             {
                 eigenvector=tmp;
+                ++sample_cnt[tmp];
                 tmp=0;
                 ++tmp_cnt;
             }
             else if(line[i]==' '||i==linelength-1) 
             {
                 vectors[vector_position]=tmp;
-                if(vector_position==128)
-                {
-                    //printf("%d\n",tmp);
-                    //exit(0);
-                }
-                //printf("Write in:%d,value:%d\n",vector_position,tmp);
                 tmp=0;
                 ++tmp_cnt;
             }
@@ -77,13 +72,12 @@ class Line
         else return 1;
     }
     void write_one_line()
-    {
+    {fprintf(lfp,"%d ",eigenvector);
         for(int i=1;i<=1<<7;++i)
         {
             fprintf(wfp,"%d ",vectors[i]);
         }
         fprintf(wfp,"\n");
-        fprintf(lfp,"%d ",eigenvector);
     }
     void print_newest_line()
     {
@@ -97,7 +91,7 @@ class Line
         FILE *restore_lable=fopen(lable,"r+");
         FILE *restore_full=fopen(full,"r+");
         FILE *restore_restore=fopen(restore,"w");
-        while(!feof(restore_lable))
+        do
         {
             fscanf(restore_lable,"%d",&eigenvector);
             fprintf(restore_restore,"%d ",eigenvector);
@@ -120,6 +114,63 @@ class Line
                 else tmp=tmp*10+line[i]-'0';
             }
             fprintf(restore_restore,"\n");
+        }while(!feof(restore_full)||!feof(restore_lable));
+        fclose(restore_lable);
+        fclose(restore_full);
+        fclose(restore_restore);
+    }
+    void display_sample()
+    {
+        int cnt=0;
+        for(int i=0;i<=999;++i)
+            if(sample_cnt[i]) ++cnt;
+        printf("eigenvector cnt:%d\n",cnt);
+        printf("sample cnt:%d\n",sample_num);
+    }
+    void compare(const char file_1[],const char file_2[])
+    {
+        FILE *file1=fopen(file_1,"r+");
+        FILE *file2=fopen(file_2,"r+");
+        if (!file1||!file2) 
+        {
+            printf("Compare:File open failed\n");
+            if (file1) fclose(file1);
+            if (file2) fclose(file2);
+        }
+        char f1[LINE_MAX],f2[LINE_MAX];
+        int line_number=0;
+        while(1) 
+        {
+            char *line1=fgets(f1,sizeof(f1),file1);
+            char *line2=fgets(f2,sizeof(f2),file2);
+            ++line_number;
+            if((!line1&&!line2)||strcmp(line1,"\n")||strcmp(line2,"\n")) 
+            {
+                fclose(file1);
+                fclose(file2);
+                printf("File is same\n");
+                return;
+            }
+            if((!line1||!line2)&&(strlen(line1)>2||strlen(line2)>2)) 
+            {
+                printf("Line %d different\n",line_number);
+                printf("f1:%s",f1);
+                printf("f2:%s\n",f2);
+                fclose(file1);
+                fclose(file2);
+                return;
+            }
+            rtrim(f1);
+            rtrim(f2);
+            if (strcmp(f1,f2)!=0) 
+            {
+                printf("Line %d different\n",line_number);
+                printf("f1:%s\n",f1);
+                printf("f2:%s\n",f2);
+                fclose(file1);
+                fclose(file2);
+                return;
+            }
         }
     }
     Line(const char readfile[],const char writefile[],const char writelable[])
@@ -142,15 +193,21 @@ int main()
     clock_t start=clock();
     double cpu_time_used;
     while(line->read_one_line()) line->write_one_line();
+    line->display_sample();
     //line->print_newest_line();
     clock_t end=clock();
     cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
     printf("Unzip_Process_Time%.2fseconds\n", cpu_time_used);
     start=clock();
     line->restore_file("aloi_lable.txt","aloi_full.txt","aloi_restore.txt");
+    end=clock();
+    cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
+    start=clock();
+    line->compare("aloi","aloi_restore.txt");
+    //printf("%d",line->debug);
     delete line;
     end=clock();
     cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
-    printf("Zip_Process_Time%.2fseconds\n", cpu_time_used);
+    printf("Compare_Process_Time%.2fseconds\n", cpu_time_used);
     return 0;
 }
