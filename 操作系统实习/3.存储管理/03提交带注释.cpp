@@ -80,17 +80,17 @@ namespace fzy//创建命名空间fzy，用于写一些数据结构
                 --size_;
             }
             else 
-            throw std::runtime_error("queue_empty");
+            ;//throw std::runtime_error("queue_empty");
         }
         T front() const //返回队列队首
         {
             if (!empty()) return head->next->v;
-            throw std::runtime_error("Queue is empty");
+            //throw std::runtime_error("Queue is empty");
         }
         T back() const //返回队列队尾
         {
             if (!empty()) return last->v;
-            throw std::runtime_error("Queue is empty");
+            //throw std::runtime_error("Queue is empty");
         }
         bool empty() const //队列判空
         {
@@ -100,6 +100,7 @@ namespace fzy//创建命名空间fzy，用于写一些数据结构
         {
             return size_;
         }
+        /*
         void print() const //输出队列，用于调试
         {
             queuenode<T>* current = head->next;
@@ -110,6 +111,7 @@ namespace fzy//创建命名空间fzy，用于写一些数据结构
             }
             std::cout << std::endl;
         }
+        */
     };
 }
 struct p_str 

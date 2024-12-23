@@ -1,8 +1,7 @@
 #include<stdio.h>
 #include<iostream>
-#include<stdexcept>
+//#include<stdexcept>
 #include<string.h>
-#include<queue>
 #define MAX_PROCESS_NUMBER 100
 namespace fzy//创建命名空间fzy，用于数据结构的实现
 {
@@ -132,7 +131,7 @@ namespace fzy//创建命名空间fzy，用于数据结构的实现
         }
         void pop()//将栈顶元素弹出
         {
-            if(size_==0) throw std::runtime_error("stack is empty");//栈为空则抛出异常
+            if(size_==0) ;//throw std::runtime_error("stack is empty");//栈为空则抛出异常
             stacknode<T>* tmp=head->next;//弹出操作
             head->next=head->next->next;
             --size_;
@@ -148,7 +147,7 @@ namespace fzy//创建命名空间fzy，用于数据结构的实现
         }
         T top()//返回栈顶元素
         {
-            if(size_==0) throw std::runtime_error("stack is empty");//如果栈为空则抛出异常
+            if(size_==0) ;//throw std::runtime_error("stack is empty");//如果栈为空则抛出异常
             return head->next->v;
         }
         void push(T v)//压入栈
@@ -159,6 +158,7 @@ namespace fzy//创建命名空间fzy，用于数据结构的实现
             newnode->v=v;
             ++size_;
         }
+        /*
         void print()//定义为按照栈的出栈顺序进行打印
         {
             int j=1;
@@ -169,6 +169,7 @@ namespace fzy//创建命名空间fzy，用于数据结构的实现
             }
             std::cout<<std::endl;
         }
+        */
     };
     template<typename T>//使用模板类定义优先队列
     class priority_queue{
@@ -177,27 +178,27 @@ namespace fzy//创建命名空间fzy，用于数据结构的实现
         :size_of_priority_queue(0), capacity(MAX_PROCESS_NUMBER), compare(&_compare)
         {
             pt = new T[capacity];
-            if(nullptr==pt) throw std::runtime_error("malloc failed");
+            if(nullptr==pt) ;//throw std::runtime_error("malloc failed");
         }
         priority_queue(int val) //带有默认大小的优先队列
             :size_of_priority_queue(0), capacity(MAX_PROCESS_NUMBER), compare(&_compare){
             while( capacity < val) capacity <<=1;
             pt = new T[capacity];//申请空间
-            if( nullptr == pt) throw std::runtime_error("malloc failed");
+            if( nullptr == pt) ;//throw std::runtime_error("malloc failed");
             return;
         }
         priority_queue(bool (*cmp)(T&,T&)) //带有比较器函数的优先队列构造函数
             :size_of_priority_queue(0), capacity(MAX_PROCESS_NUMBER), compare(cmp)
             {
             pt = new T[capacity];
-            if( nullptr == pt )throw std::runtime_error("malloc failed");
+            if( nullptr == pt );//throw std::runtime_error("malloc failed");
             return;
         }
         priority_queue( int val, bool (*cmp)(T&,T&) ) //带有默认大小并且有比较器的优先队列
             :size_of_priority_queue(0), capacity(MAX_PROCESS_NUMBER), compare(cmp){
             while( capacity < val) capacity <<= 1;//申请一个大于该空间大小的空间
             pt = new T[capacity];
-            if( nullptr == pt ) throw std::runtime_error("malloc failed");
+            if( nullptr == pt ) ;//throw std::runtime_error("malloc failed");
             return;
         }
         ~priority_queue()//优先队列的析构函数
@@ -246,7 +247,7 @@ namespace fzy//创建命名空间fzy，用于数据结构的实现
         }
         T top()
         {
-            if(size_of_priority_queue<0) throw std::runtime_error("queue empty");//优先队列为空则抛出异常
+            if(size_of_priority_queue<0) ;//throw std::runtime_error("queue empty");//优先队列为空则抛出异常
             return pt[0];//返回队头元素
         }
         bool is_empty_pl()const
@@ -442,7 +443,7 @@ namespace os//定义命名空间os，用于进程调度的书写
         void read(const char filename[])//读取文件
         {
             FILE *fp=fopen(filename,"r+");
-            if(fp==NULL) throw std::runtime_error("open file failed");
+            if(fp==NULL) ;//throw std::runtime_error("open file failed");
             fscanf(fp,"%d",&process_cnt);
             for(int i=1;i<=process_cnt;++i)
             {
@@ -546,7 +547,7 @@ namespace os//定义命名空间os，用于进程调度的书写
         void read(const char filename[])//读取文件
         {
             FILE *fp=fopen(filename,"r+");
-            if(fp==NULL) throw std::runtime_error("open file failed");
+            if(fp==NULL) ;//throw std::runtime_error("open file failed");
             fscanf(fp,"%d",&process_cnt);
             for(int i=1;i<=process_cnt;++i)
             {

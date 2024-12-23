@@ -742,6 +742,141 @@ int main()
     return 0;
 }
 ```
+
+## 2.1实验内容
+* 实验目的：分析进程争用资源的现象，学习解决进程互斥的方法。
+* 设计内容：
+
+用程序实现生产者—消费者问题。具体问题描述：一个仓库可以存放K件物品。生产者每生产一件产品，将产品放入仓库，仓库满了就停止生产。消费者每次从仓库中去一件物品，然后进行消费，仓库空时就停止消费。
+
+数据结构：
+```
+	Producer - 生产者进程，Consumer - 消费者进程 
+	buffer: array [0..k-1] of integer; 
+	in, out: 0..k-1;  in记录第一个空缓冲区，out记录第一个不空的缓冲区 
+	s1,s2,mutex: semaphore; s1控制缓冲区不满,s2控制缓冲区不空,mutex保护临界区；
+	初始化s1=k,s2=0,mutex=1
+```
+原语描述：
+```
+producer（生产者进程）： 
+   item_Type item; 
+  { 
+     while (true) 
+     { 
+       produce(&item);
+       p(s1); 
+       p(mutex); 
+       buffer[in]:=item; 
+       in:=(in+1) mod k; 
+       v(mutex); 
+       v(s2); 
+     } 
+  } 
+```
+```
+  consumer（消费者进程）： 
+   item_Type item; 
+  { 
+     while (true) 
+     { 
+       p(s2); 
+       p(mutex); 
+        item:=buffer[out]; 
+        out:=(out+1) mod k; 
+        v(mutex); 
+        v(s1); 
+     } 
+   }
+```
+## 2.2算法描述
+* 整型信号量：wait(S)和signal(S)是两个原子操作，因此，它们在执行时是不可中断的。亦即，当一个进程在修改某信号量时，没有其它进程可同时对该信号量进行修改。此外，在wait操作中，对S值的测试和做S=S-1操作时都不可中断。
+* 记录型信号量：记录型信号量是一种不存在“忙等”现象的进程同步机制。除了需要一个用于代表资源数目的整型变量value外，再增加一个进程链表L，用于链接所有等待该资源的进程，记录型信号量得名于采用记录型的数据结构。
+* 使用信号量实现线程同步：信号量机制能用于解决进程间的各种同步问题。设S为实现进程P1，P2同步的公共信号量，初始值为0。进程P2中的语句y要使用进程P1中的语句x的运行结果，所以只有当语句x执行完成之后，语句y才可以执行。
+* 利用信号量实现进程互斥：信号量机制能很方便地解决进程互斥问题。设S为实现进程P1，P2互斥的信号量，由于每次只允许一个进程进入临界区，所以S的初始值应为1(即可用资源数为1)。只需要把临界区置于P(S)和V(S)之间，即可实现两个进程对临界资源的互斥访问。
+
+## 2.3实验结果
+
+此程序在macOS14.6.1系统，采用如下编译指令：
+```
+g++ -std=c++14 02Synchronization_Mutex.cpp -o 02Synchronization_Mutex
+```
+运行结果的截图如下：
+![图片 1.png](https://cdn.acwing.com/media/article/image/2024/12/22/383173_c0db619fc0-图片-1.png) 
+
+生产者先生产了8个产品在0号位置，消费者消费了。生产者再在1 2 3 4号位置分别生产了10 66 43
+
+4个产品，然后消费者消费了3号位置中的所有产品，以此类推……
+
+## 2.4 实现小结
+* 在本次实习的过程中，我学习到了通过c语言中的pthread.h库创建进程的操作，学习到了通过信号量semaphore库实现进程同步的操作。
+* 实习代码一开始我没有加上sleep(1);等待语句，导致程序一开始创建了很多进程，在发现代码运行出现问题之后，我才加上了运行次数的限制和运行时间的等待。
+![图片 1.png](https://cdn.acwing.com/media/article/image/2024/12/22/383173_ea741899c0-图片-1.png) 
+
+## 2.5实验代码
+```
+#include<stdio.h>
+#include<stdlib.h>
+#include<pthread.h>
+#include<semaphore.h>
+#include<unistd.h>
+#define MAX_BUFFER 5
+int buffer[MAX_BUFFER];//缓冲
+int in=0,out=0;
+sem_t s1;//控制缓冲区未满
+sem_t s2;//控制缓冲区非空
+sem_t mutex;//控制对临界区的访问
+void *producer(void *arg)//生产者进程
+{
+    int item;
+    while(1) 
+    {
+        item=rand()%100+1;
+        printf("Producer produced in %d:%d\n",in,item);
+        sem_wait(&s1); 
+        sem_wait(&mutex);
+        buffer[in]=item;
+        in=(in+1)%MAX_BUFFER;
+        sem_post(&mutex);
+        sem_post(&s2);
+        sleep(rand()%2);
+    }
+    return NULL;
+}
+void *consumer(void *arg)//消费者进程
+{
+    int item;
+    while(1) 
+    {
+        sem_wait(&s2);
+        sem_wait(&mutex);
+        item=buffer[out];
+        out=(out+1)%MAX_BUFFER;
+        if(item!=0) printf("Consumer consumed in %d:%d\n",out,item);
+        sem_post(&mutex);
+        sem_post(&s1);
+        sleep(rand()%2);
+    }
+    return NULL;
+}
+int main() 
+{
+    pthread_t prod,cons;
+    sem_init(&s1,0,MAX_BUFFER);//初始化缓冲区未满信号量
+    sem_init(&s2,0,0);//初始化缓冲区非空信号量
+    sem_init(&mutex,0,1);//初始化临界区访问信号量
+    for(int i=1;i<=3;++i)//只运行3次
+    {
+        pthread_create(&prod,NULL,producer,NULL);//创建生产者进程
+        pthread_create(&cons,NULL,consumer,NULL);//创建消费者进程
+        sleep(1);//防止运行太快
+    }
+    sem_destroy(&s1);//删除信号量
+    sem_destroy(&s2);
+    sem_destroy(&mutex);
+    return 0;
+}
+```
 # 三.存储管理
 ## 3.1实验内容
 * 实现目的：通过请求页面式存储管理中页面置换算法设计，了解存储技术的特点，掌握请求页式存储管理的页面置换算法。
