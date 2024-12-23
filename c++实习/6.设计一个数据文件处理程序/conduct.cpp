@@ -58,7 +58,7 @@ class Line
                 ++tmp_cnt;
             }
         }
-        if(fp==nullptr) return 0;
+        if(feof(fp)) return 0;
         else return 1;
     }
     void write_one_line()
