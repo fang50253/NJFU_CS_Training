@@ -28,12 +28,18 @@ class Line
         fgets(line,sizeof line,fp);
         int linelength=strlen(line);
         int tmp=0,tmp_cnt=0;
+        //printf("size:%d\n",linelength);
         int vector_position;//记录向量的位置
         memset(vectors,0,sizeof vectors);
         line[linelength]=' ';
-        line[linelength+1]='\0';
+        line[linelength+1]='0';
+        line[linelength+2]=':';
+        line[linelength+3]='0';
+        line[linelength+4]='\0';
+        linelength=strlen(line);
         //printf("size:%d\n",linelength);
         //printf("%s",line);
+        //exit(0);
         for(int i=0;i<linelength+1;++i)
         {
             if(line[i]!=' '&&line[i]!=':')
