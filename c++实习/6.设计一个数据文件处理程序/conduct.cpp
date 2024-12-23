@@ -5,7 +5,6 @@
 const int LINE_MAX=1e5;
 const int VECTOR_MAX=1<<8;
 const int SAMPLE_MAX=1e3+10;
-const int FEATURE=1<<7;
 class Line
 {
     private:
@@ -16,6 +15,55 @@ class Line
     int sample_num;
     int eigenvector;//记录特征向量，也就是第一个参数的值
     int feature=0;
+    int cnt_feature(const char filename[])
+    {
+        FILE *fp_tmp = fopen(filename, "r+");
+        if(fp_tmp==NULL)
+        {
+            printf("File open failed\n");
+            return -1;
+        }
+        int max_feature=0;
+        do
+        {
+            fgets(line,sizeof line,fp_tmp);
+            if(feof(fp_tmp)) return max_feature;
+            int linelength=strlen(line);
+            int tmp=0,tmp_cnt=0;
+            int vector_position;//记录向量的位置
+            memset(vectors,0,sizeof vectors);
+            line[linelength-1]=' ';
+            line[linelength]='\0';
+            linelength=strlen(line);
+            for(int i=0;i<linelength+1;++i)
+            {
+                if(line[i]!=' '&&line[i]!=':')
+                {
+                    tmp=tmp*10+line[i]-'0';
+                }
+                else if(line[i]==' '&&tmp_cnt==0)
+                {
+                    eigenvector=tmp;
+                    ++sample_cnt[tmp];
+                    tmp=0;
+                }
+                else if(line[i]==' '||i==linelength-1) 
+                {
+                    tmp=0;
+                    max_feature=max(max_feature,vector_position);
+                    ++tmp_cnt;
+                }
+                else if(line[i]==':')
+                {
+                    vector_position=tmp;
+                    tmp=0;
+                    ++tmp_cnt;
+                }
+            }
+        }while(!feof(fp_tmp));
+        fclose(fp_tmp);
+        return max_feature;
+    }
     int max(int a,int b)
     {
         return a>b?a:b;
@@ -64,7 +112,6 @@ class Line
             else if(line[i]==' '||i==linelength-1) 
             {
                 vectors[vector_position]=tmp;
-                feature=max(feature,vector_position);
                 tmp=0;
                 ++tmp_cnt;
             }
@@ -79,8 +126,9 @@ class Line
         else return 1;
     }
     void write_one_line()
-    {fprintf(lfp,"%d ",eigenvector);
-        for(int i=1;i<=FEATURE;++i)
+    {
+        fprintf(lfp,"%d ",eigenvector);
+        for(int i=1;i<=feature;++i)
         {
             fprintf(wfp,"%d ",vectors[i]);
         }
@@ -88,7 +136,7 @@ class Line
     }
     void print_newest_line()
     {
-        for(int i=1;i<=FEATURE;++i)
+        for(int i=1;i<=feature;++i)
         {
             printf("%d ",vectors[i]);
         }
@@ -182,6 +230,7 @@ class Line
     }
     Line(const char readfile[],const char writefile[],const char writelable[])
     {
+        feature=cnt_feature(readfile);
         read_file(readfile);
         write_file(writefile,writelable);
     }
