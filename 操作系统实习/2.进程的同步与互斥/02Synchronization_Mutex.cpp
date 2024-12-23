@@ -21,7 +21,7 @@ void *producer(void *arg)//生产者进程
         buffer[in]=item;
         in=(in+1)%MAX_BUFFER;
         sem_post(&mutex);
-        sem_post(&s2);
+        if(in==out) sem_post(&s2);
         sleep(rand()%2);
     }
     return NULL;
@@ -35,9 +35,9 @@ void *consumer(void *arg)//消费者进程
         sem_wait(&mutex);
         item=buffer[out];
         out=(out+1)%MAX_BUFFER;
-        if(item!=0) printf("Consumer consumed in %d:%d\n",out,item);
+        printf("Consumer consumed in %d:%d\n",out,item);
         sem_post(&mutex);
-        sem_post(&s1);
+        if((in+1)%MAX_BUFFER==out) sem_post(&s1);
         sleep(rand()%2);
     }
     return NULL;
@@ -48,12 +48,12 @@ int main()
     sem_init(&s1,0,MAX_BUFFER);//初始化缓冲区未满信号量
     sem_init(&s2,0,0);//初始化缓冲区非空信号量
     sem_init(&mutex,0,1);//初始化临界区访问信号量
-    for(int i=1;i<=3;++i)//只运行3次
-    {
-        pthread_create(&prod,NULL,producer,NULL);//创建生产者进程
-        pthread_create(&cons,NULL,consumer,NULL);//创建消费者进程
-        sleep(1);//防止运行太快
-    }
+    //for(int i=1;i<=3;++i)//只运行3次
+    pthread_create(&prod,NULL,producer,NULL);//创建生产者进程
+    sleep(2);
+    pthread_create(&cons,NULL,consumer,NULL);//创建消费者进程
+    pthread_join(prod, NULL);
+    pthread_join(cons, NULL);
     sem_destroy(&s1);//删除信号量
     sem_destroy(&s2);
     sem_destroy(&mutex);
