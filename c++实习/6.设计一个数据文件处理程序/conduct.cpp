@@ -2,7 +2,7 @@
 #include<string.h>
 #include<time.h>
 #include<stdlib.h>
-const int LINE_MAX=2000;
+const int LINE_MAX=2e5;
 const int VECTOR_MAX=129;
 class Line
 {
@@ -77,6 +77,32 @@ class Line
             printf("%d ",vectors[i]);
         }
     }
+    void restore_file(const char lable[],const char full[],const char restore[])
+    {
+        FILE *restore_lable=fopen(lable,"r+");
+        FILE *restore_full=fopen(full,"r+");
+        FILE *restore_restore=fopen(restore,"w");
+        while(!feof(restore_lable))
+        {
+            fscanf(restore_lable,"%d",&eigenvector);
+            fprintf(restore_restore,"%d ",eigenvector);
+            fgets(line,sizeof line,restore_full);
+            int linelength=strlen(line);
+            int tmp=0,tmp_cnt=0;
+            for(int i=0;i<linelength;++i)
+            {
+                if(line[i]==' ')
+                {
+                    ++tmp_cnt;
+                    if(tmp==0) continue;
+                    else
+                    {
+
+                    }
+                }
+            }
+        }
+    }
     Line(const char readfile[],const char writefile[],const char writelable[])
     {
         read_file(readfile);
@@ -85,6 +111,9 @@ class Line
     ~Line()
     {
         memset(line,0,sizeof line);
+        fclose(fp);
+        fclose(lfp);
+        fclose(wfp);
     }
 };
 int main()
