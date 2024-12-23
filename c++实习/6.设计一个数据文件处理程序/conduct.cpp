@@ -46,9 +46,14 @@ class Line
                 tmp=0;
                 ++tmp_cnt;
             }
-            else if(line[i]==' ') 
+            else if(line[i]==' '||i==linelength-1) 
             {
                 vectors[vector_position]=tmp;
+                if(vector_position==128)
+                {
+                    //printf("%d\n",tmp);
+                    //exit(0);
+                }
                 //printf("Write in:%d,value:%d\n",vector_position,tmp);
                 tmp=0;
                 ++tmp_cnt;
@@ -128,12 +133,7 @@ int main()
     int cnt=0;
     clock_t start=clock();
     double cpu_time_used;
-    while(line->read_one_line())
-    {
-        ++cnt;
-        line->write_one_line();
-        if(cnt%10000==0) printf("Process:%d\n",cnt);
-    }
+    while(line->read_one_line()) line->write_one_line();
     //line->print_newest_line();
     clock_t end=clock();
     cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
