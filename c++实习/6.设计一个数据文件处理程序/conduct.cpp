@@ -3,8 +3,9 @@
 #include<time.h>
 #include<stdlib.h>
 const int LINE_MAX=1e5;
-const int VECTOR_MAX=129;
+const int VECTOR_MAX=1<<8;
 const int SAMPLE_MAX=1e3+10;
+const int FEATURE=1<<7;
 class Line
 {
     private:
@@ -14,6 +15,11 @@ class Line
     FILE *fp,*wfp,*lfp;
     int sample_num;
     int eigenvector;//记录特征向量，也就是第一个参数的值
+    int feature=0;
+    int max(int a,int b)
+    {
+        return a>b?a:b;
+    }
     void read_file(const char filename[])
     {
         fp=fopen(filename,"r+");
@@ -25,7 +31,7 @@ class Line
         lfp=fopen(lable,"w");
         if(wfp==nullptr||lfp==nullptr) printf("File open failed\n");
     }
-    void rtrim(char *str) 
+    void rtrim(char *str) //作用是删除字符串最后的空格和换行，便于比较
     {
         size_t len=strlen(str);
         while(len>0&&(str[len-1]==' '||str[len-1]=='\n')) str[--len]='\0';
@@ -58,6 +64,7 @@ class Line
             else if(line[i]==' '||i==linelength-1) 
             {
                 vectors[vector_position]=tmp;
+                feature=max(feature,vector_position);
                 tmp=0;
                 ++tmp_cnt;
             }
@@ -73,7 +80,7 @@ class Line
     }
     void write_one_line()
     {fprintf(lfp,"%d ",eigenvector);
-        for(int i=1;i<=1<<7;++i)
+        for(int i=1;i<=FEATURE;++i)
         {
             fprintf(wfp,"%d ",vectors[i]);
         }
@@ -81,7 +88,7 @@ class Line
     }
     void print_newest_line()
     {
-        for(int i=1;i<=1<<7;++i)
+        for(int i=1;i<=FEATURE;++i)
         {
             printf("%d ",vectors[i]);
         }
@@ -124,8 +131,8 @@ class Line
         int cnt=0;
         for(int i=0;i<=999;++i)
             if(sample_cnt[i]) ++cnt;
-        printf("eigenvector cnt:%d\n",cnt);
-        printf("sample cnt:%d\n",sample_num);
+        printf("Eigenvector_Cnt:%d\n",feature);
+        printf("Sample_Cnt:%d\n",sample_num-1);
     }
     void compare(const char file_1[],const char file_2[])
     {
@@ -202,6 +209,7 @@ int main()
     line->restore_file("aloi_lable.txt","aloi_full.txt","aloi_restore.txt");
     end=clock();
     cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
+    printf("Zip_Process_Time%.2fseconds\n", cpu_time_used);
     start=clock();
     line->compare("aloi","aloi_restore.txt");
     //printf("%d",line->debug);
