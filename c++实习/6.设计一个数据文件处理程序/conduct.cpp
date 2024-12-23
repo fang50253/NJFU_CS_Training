@@ -30,9 +30,11 @@ class Line
         int tmp=0,tmp_cnt=0;
         int vector_position;//记录向量的位置
         memset(vectors,0,sizeof vectors);
+        line[linelength]=' ';
+        line[linelength+1]='\0';
         //printf("size:%d\n",linelength);
         //printf("%s",line);
-        for(int i=0;i<linelength;++i)
+        for(int i=0;i<linelength+1;++i)
         {
             if(line[i]!=' '&&line[i]!=':')
             {
@@ -88,6 +90,7 @@ class Line
             fprintf(restore_restore,"%d ",eigenvector);
             fgets(line,sizeof line,restore_full);
             int linelength=strlen(line);
+            line[linelength]=' ';
             int tmp=0,tmp_cnt=0;
             for(int i=0;i<linelength;++i)
             {
@@ -97,10 +100,13 @@ class Line
                     if(tmp==0) continue;
                     else
                     {
-
+                        fprintf(restore_restore,"%d:%d ",tmp_cnt,tmp);
                     }
+                    tmp=0;
                 }
+                else tmp=tmp*10+line[i]-'0';
             }
+            fprintf(restore_restore,"\n");
         }
     }
     Line(const char readfile[],const char writefile[],const char writelable[])
@@ -120,7 +126,7 @@ int main()
 {
     Line *line=new Line("aloi","aloi_full.txt","aloi_lable.txt");
     int cnt=0;
-    clock_t start = clock();
+    clock_t start=clock();
     double cpu_time_used;
     while(line->read_one_line())
     {
@@ -131,6 +137,12 @@ int main()
     //line->print_newest_line();
     clock_t end=clock();
     cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
-    printf("Process_Time%.2fseconds\n", cpu_time_used);
+    printf("Unzip_Process_Time%.2fseconds\n", cpu_time_used);
+    start=clock();
+    line->restore_file("aloi_lable.txt","aloi_full.txt","aloi_restore.txt");
+    delete line;
+    end=clock();
+    cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
+    printf("Zip_Process_Time%.2fseconds\n", cpu_time_used);
     return 0;
 }
