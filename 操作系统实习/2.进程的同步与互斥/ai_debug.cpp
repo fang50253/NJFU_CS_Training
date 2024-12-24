@@ -1,75 +1,99 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <unistd.h>
-
+#include<stdio.h>
+#include<stdlib.h>
+#include<pthread.h>
+#include<semaphore.h>
+#include<unistd.h>
 #define MAX_BUFFER 5
-int buffer[MAX_BUFFER]; // 缓冲区
-int in = 0, out = 0;    // 生产者和消费者的指针
-
-sem_t s1;   // 控制缓冲区未满
-sem_t s2;   // 控制缓冲区非空
-sem_t mutex; // 控制对缓冲区的访问
-
-void *producer(void *arg) {
-    while (1) {
-        int item = rand() % 100 + 1; // 随机生成数据
-        sem_wait(&s1);              // 等待缓冲区未满
-        sem_wait(&mutex);           // 加锁
-        if((in+1)%MAX_BUFFER!=out)
+int buffer[MAX_BUFFER];//缓冲
+int in=0,out=0;
+sem_t empty;//控制缓冲区未满
+sem_t full;//控制缓冲区非空
+sem_t mutex;//控制对临界区的访问
+void *producer(void *arg)//生产者进程
+{
+    int item;
+    while(1) 
+    {
+        item=rand()%100+1;
+        sem_wait(&empty); 
+        sem_wait(&mutex);
+        //if((in+1)%MAX_BUFFER!=out)
         {
-            // 生产数据
-            buffer[in] = item;
-            printf("Producer produced in %d: %d\n", in, item);
-            in = (in + 1) % MAX_BUFFER;
+            if(in==2) printf("Producer produced in %d:%d\n",in,item);
+            buffer[in]=item;
+            in=(in+1)%MAX_BUFFER;
+            sem_post(&mutex);
         }
-        sem_post(&mutex);           // 解锁
-        sem_post(&s2);              // 增加缓冲区非空信号量
-
-        sleep(rand() % 2); // 随机休眠
+        //if(in==out) 
+        sem_post(&full);
+        sleep(rand()%2);
     }
     return NULL;
 }
-
-void *consumer(void *arg) {
-    while (1) {
-        sem_wait(&s2);              // 等待缓冲区非空
-        sem_wait(&mutex);           // 加锁
-
-        if(in!=out)
+void *consumer(void *arg)//消费者进程
+{
+    int item;
+    while(1) 
+    {
+        sem_wait(&full);
+        sem_wait(&mutex);
+        //if(in!=out)
         {
-            // 消费数据
-            int item = buffer[out];
-            printf("Consumer consumed in %d: %d\n", out, item);
-            out = (out + 1) % MAX_BUFFER;
+            item=buffer[out];
+            if(out==2) printf("Consumer consumed in %d:%d\n",out,item);
+            out=(out+1)%MAX_BUFFER;
         }
-        
-
-        sem_post(&mutex);           // 解锁
-        sem_post(&s1);              // 增加缓冲区未满信号量
-
-        sleep(rand() % 2); // 随机休眠
+        sem_post(&mutex);
+        sem_post(&empty);
+        sleep(rand()%2);
     }
     return NULL;
 }
-
-int main() {
-    pthread_t prod, cons;
-
-    sem_init(&s1, 0, MAX_BUFFER); // 初始化缓冲区未满信号量
-    sem_init(&s2, 0, 0);          // 初始化缓冲区非空信号量
-    sem_init(&mutex, 0, 1);       // 初始化互斥信号量
-
-    pthread_create(&prod, NULL, producer, NULL); // 创建生产者线程
-    pthread_create(&cons, NULL, consumer, NULL); // 创建消费者线程
-
-    pthread_join(prod, NULL); // 等待生产者线程结束
-    pthread_join(cons, NULL); // 等待消费者线程结束
-
-    sem_destroy(&s1); // 销毁缓冲区未满信号量
-    sem_destroy(&s2); // 销毁缓冲区非空信号量
-    sem_destroy(&mutex); // 销毁互斥信号量
-
+int main() 
+{
+    pthread_t prod,cons;
+    sem_init(&empty,0,MAX_BUFFER);//初始化缓冲区未满信号量
+    sem_init(&full,0,0);//初始化缓冲区非空信号量
+    sem_init(&mutex,0,1);//初始化临界区访问信号量
+    //for(int i=1;i<=3;++i)//只运行3次
+    pthread_create(&prod,NULL,producer,NULL);//创建生产者进程
+    sleep(2);
+    pthread_create(&cons,NULL,consumer,NULL);//创建消费者进程
+    pthread_join(prod, NULL);
+    pthread_join(cons, NULL);
+    sem_destroy(&empty);//删除信号量
+    sem_destroy(&full);
+    sem_destroy(&mutex);
     return 0;
 }
+
+
+/*
+只输出#2位置上的数据
+运行日志如下：
+
+Producer produced in 2:31
+Consumer consumed in 2:31
+Producer produced in 2:30
+Producer produced in 2:27
+Consumer consumed in 2:27
+Producer produced in 2:46
+Producer produced in 2:25
+Consumer consumed in 2:25
+Consumer consumed in 2:25
+Producer produced in 2:36
+Consumer consumed in 2:36
+Producer produced in 2:52
+Producer produced in 2:45
+Consumer consumed in 2:45
+Producer produced in 2:36
+Consumer consumed in 2:36
+Producer produced in 2:7
+Consumer consumed in 2:7
+Producer produced in 2:58
+Consumer consumed in 2:58
+Producer produced in 2:27
+Producer produced in 2:95
+Consumer consumed in 2:95
+
+*/
