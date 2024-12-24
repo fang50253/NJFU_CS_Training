@@ -17,12 +17,13 @@ void *producer(void *arg) {
         int item = rand() % 100 + 1; // 随机生成数据
         sem_wait(&s1);              // 等待缓冲区未满
         sem_wait(&mutex);           // 加锁
-
-        // 生产数据
-        buffer[in] = item;
-        printf("Producer produced in %d: %d\n", in, item);
-        in = (in + 1) % MAX_BUFFER;
-
+        if((in+1)%MAX_BUFFER!=out)
+        {
+            // 生产数据
+            buffer[in] = item;
+            printf("Producer produced in %d: %d\n", in, item);
+            in = (in + 1) % MAX_BUFFER;
+        }
         sem_post(&mutex);           // 解锁
         sem_post(&s2);              // 增加缓冲区非空信号量
 
@@ -36,10 +37,14 @@ void *consumer(void *arg) {
         sem_wait(&s2);              // 等待缓冲区非空
         sem_wait(&mutex);           // 加锁
 
-        // 消费数据
-        int item = buffer[out];
-        printf("Consumer consumed in %d: %d\n", out, item);
-        out = (out + 1) % MAX_BUFFER;
+        if(in!=out)
+        {
+            // 消费数据
+            int item = buffer[out];
+            printf("Consumer consumed in %d: %d\n", out, item);
+            out = (out + 1) % MAX_BUFFER;
+        }
+        
 
         sem_post(&mutex);           // 解锁
         sem_post(&s1);              // 增加缓冲区未满信号量
