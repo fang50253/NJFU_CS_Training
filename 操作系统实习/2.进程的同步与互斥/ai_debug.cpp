@@ -26,7 +26,7 @@ void *producer(void *arg)//生产者进程
         }
         //if(in==out) 
         sem_post(&full);
-        sleep(rand()%2);
+        usleep(rand()%1000);
     }
     return NULL;
 }
@@ -45,7 +45,7 @@ void *consumer(void *arg)//消费者进程
         }
         sem_post(&mutex);
         sem_post(&empty);
-        sleep(rand()%2);
+        usleep(rand()%1000);
     }
     return NULL;
 }
@@ -53,11 +53,10 @@ int main()
 {
     pthread_t prod,cons;
     sem_init(&empty,0,MAX_BUFFER);//初始化缓冲区未满信号量
-    sem_init(&full,0,0);//初始化缓冲区非空信号量
+    sem_init(&full,0,1);//初始化缓冲区非空信号量
     sem_init(&mutex,0,1);//初始化临界区访问信号量
     //for(int i=1;i<=3;++i)//只运行3次
     pthread_create(&prod,NULL,producer,NULL);//创建生产者进程
-    sleep(2);
     pthread_create(&cons,NULL,consumer,NULL);//创建消费者进程
     pthread_join(prod, NULL);
     pthread_join(cons, NULL);

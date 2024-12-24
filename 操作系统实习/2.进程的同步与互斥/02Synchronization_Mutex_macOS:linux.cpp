@@ -17,9 +17,12 @@ void *producer(void *arg)//生产者进程
         item=rand()%100+1;
         sem_wait(&empty); 
         sem_wait(&mutex);
-        printf("Producer produced in %d:%d\n",in,item);
-        buffer[in]=item;
-        in=(in+1)%MAX_BUFFER;
+        if((in+1)%MAX_BUFFER!=out)//判断队列非满
+        {
+            printf("Producer produced in %d:%d\n",in,item);
+            buffer[in]=item;
+            in=(in+1)%MAX_BUFFER;    
+        }
         sem_post(&mutex);
         //if(in==out) 
         sem_post(&full);
@@ -34,9 +37,12 @@ void *consumer(void *arg)//消费者进程
     {
         sem_wait(&full);
         sem_wait(&mutex);
-        item=buffer[out];
-        printf("Consumer consumed in %d:%d\n",out,item);
-        out=(out+1)%MAX_BUFFER;
+        if(in!=out)//判断队列非空
+        {
+            item=buffer[out];
+            printf("Consumer consumed in %d:%d\n",out,item);
+            out=(out+1)%MAX_BUFFER;
+        }
         sem_post(&mutex);
         sem_post(&empty);
         sleep(rand()%3);
