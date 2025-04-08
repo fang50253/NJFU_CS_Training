@@ -1,0 +1,16 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     "/Users/fang50253/Desktop/Files/Documents/数据结构/课程作业/2024-08-12实习01"
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _gcd, symObjAddr: 0x0, symBinAddr: 0x100003A0C, symSize: 0x68 }
+  - { offsetInCU: 0x41, offset: 0x41, size: 0x8, addend: 0x0, symName: _gcd, symObjAddr: 0x0, symBinAddr: 0x100003A0C, symSize: 0x68 }
+  - { offsetInCU: 0x77, offset: 0x77, size: 0x8, addend: 0x0, symName: _lcm, symObjAddr: 0x68, symBinAddr: 0x100003A74, symSize: 0x44 }
+  - { offsetInCU: 0xAD, offset: 0xAD, size: 0x8, addend: 0x0, symName: _create, symObjAddr: 0xAC, symBinAddr: 0x100003AB8, symSize: 0x4C }
+  - { offsetInCU: 0xD1, offset: 0xD1, size: 0x8, addend: 0x0, symName: _print, symObjAddr: 0xF8, symBinAddr: 0x100003B04, symSize: 0x7C }
+  - { offsetInCU: 0xF5, offset: 0xF5, size: 0x8, addend: 0x0, symName: _approximation, symObjAddr: 0x174, symBinAddr: 0x100003B80, symSize: 0xC8 }
+  - { offsetInCU: 0x12B, offset: 0x12B, size: 0x8, addend: 0x0, symName: _add, symObjAddr: 0x23C, symBinAddr: 0x100003C48, symSize: 0x60 }
+  - { offsetInCU: 0x16F, offset: 0x16F, size: 0x8, addend: 0x0, symName: _sub, symObjAddr: 0x29C, symBinAddr: 0x100003CA8, symSize: 0x60 }
+  - { offsetInCU: 0x1B3, offset: 0x1B3, size: 0x8, addend: 0x0, symName: _muti, symObjAddr: 0x2FC, symBinAddr: 0x100003D08, symSize: 0x50 }
+  - { offsetInCU: 0x1F7, offset: 0x1F7, size: 0x8, addend: 0x0, symName: _div, symObjAddr: 0x34C, symBinAddr: 0x100003D58, symSize: 0x98 }
+  - { offsetInCU: 0x23B, offset: 0x23B, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x3E4, symBinAddr: 0x100003DF0, symSize: 0x11C }
+...
