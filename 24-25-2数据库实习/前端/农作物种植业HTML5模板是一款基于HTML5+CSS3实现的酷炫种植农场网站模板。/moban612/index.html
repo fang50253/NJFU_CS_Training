@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Home</title>
+<link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="css/style.css" type="text/css" rel="stylesheet" media="all">
+<!-- Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Eco Farm Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+	Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- //Custom Theme files -->
+<!-- js -->
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/modernizr.custom.js"></script>
+<!-- //js -->	
+<!-- start-smoth-scrolling-->
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>	
+<script type="text/javascript">
+		jQuery(document).ready(function($) {
+			$(".scroll").click(function(event){		
+				event.preventDefault();
+				$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+			});
+		});
+</script>
+<!--//end-smoth-scrolling-->
+<!--animate-->
+<link href="css/animate.css" rel="stylesheet" type="text/css" media="all">
+<script src="js/wow.min.js"></script>
+	<script>
+		 new WOW().init();
+	</script>
+<!--//end-animate-->
+</head>
+<body>
+	<!--banner-->
+	<div class="banner">		
+		<!--header-->
+		<div class="banner-text">
+			<div class="logo">	
+				<a href="index.html"><img src="images/logo.png" alt=""/></a>
+			</div> 
+			<div class="top-nav">	
+				<ul class="nav1 cl-effect-1">
+					<li><a href="index.html">Home</a></li>
+					<li><a href="#about" class="scroll">About</a></li>
+					<li><a href="#services" class="scroll">Services</a></li>
+					<li><a href="#products" class="scroll">Products</a></li>
+					<li><a href="#team" class="scroll">Our Team</a></li>
+					<li><a href="#contact" class="scroll">Contact</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- banner Slider starts Here -->
+		<script src="js/responsiveslides.min.js"></script>
+		<script>
+			// You can also use "$(window).load(function() {"
+				$(function () {
+				// Slideshow 3
+					$("#slider3").responsiveSlides({
+					auto: true,
+					pager:false,
+					nav:true,
+					speed: 500,
+					namespace: "callbacks",
+					before: function () {
+					$('.events').append("<li>before event fired.</li>");
+					},
+					after: function () {
+						$('.events').append("<li>after event fired.</li>");
+					}
+				});	
+			});
+		</script>
+		<!--//End-slider-script -->
+		<div  id="top" class="callbacks_container">
+			<ul class="rslides" id="slider3">
+				<li>					
+					<div class="banner2">						
+					</div>
+				</li>
+				<li>					
+					<div class="banner1">						
+					</div>
+				</li>								
+			</ul>
+		</div>
+	</div>
+	<!--//banner-->
+	<!--about-->
+	<div class="about" id="about">
+		<div class="container">
+			<div class="title">
+				<h3>About Us</h3>
+				<p>A wonderful designs has takenpossession but also the leap into electronic pesetting industry  It was popularised in the 1960s with the release </p>
+			</div>
+			<div class="about-grids">				
+				<div class="col-md-6 about-info  wow fadeInLeft animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<h4>Eco friendly food is good for health </h4>
+					<p>Takenpossession of lorem Ipsum is simply dummy text of the printing and typesetting industry In sit amet sapien eros Integer  in tincidunt labore et dolore magna aliqua  remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p>
+					<ul>
+						<li><a href="#">Donec ut quam lscele volutri.</a></li>
+						<li><a href="#">Etiam volutpatbh quam bortis</a></li>
+						<li><a href="#">Varius fusce vit aeblandit.</a></li>
+					</ul>
+				</div>
+				<div class="col-md-6 about-info  wow fadeInRight animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<img src="images/img1.jpg" alt=""/>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+	<!--//about-->
+	<!--services-->
+	<div class="services" id="services">
+		<div class="container">			
+			<div class="title">
+				<h3>Our Services</h3>
+				<p>A wonderful designs has takenpossession but also the leap into electronic pesetting industry  It was popularised in the 1960s with the release </p>
+			</div>
+			<div class="service-grids">
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img">
+						<img src="images/icon2.png" alt=""/>
+					</div>
+					<h5>Ultrices proin eget ipsum</h5>
+					<p>Claritas est etiam processus dynaicus qui sequitur mutationem consuetudium lectorum. Mirum est notare quam </p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img">
+						<img src="images/icon3.png" alt=""/>
+					</div>
+					<h5>Ultrices proin eget ipsum</h5>
+					<p>Claritas est etiam processus dynaicus qui sequitur mutationem consuetudium lectorum. Mirum est notare quam </p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img">
+						<img src="images/icon4.png" alt=""/>
+					</div>
+					<h5>Ultrices proin eget ipsum</h5>
+					<p>Claritas est etiam processus dynaicus qui sequitur mutationem consuetudium lectorum. Mirum est notare quam </p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img">
+						<img src="images/icon5.png" alt=""/>
+					</div>
+					<h5>Ultrices proin eget ipsum</h5>
+					<p>Claritas est etiam processus dynaicus qui sequitur mutationem consuetudium lectorum. Mirum est notare quam </p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img">
+						<img src="images/icon6.png" alt=""/>
+					</div>
+					<h5>Ultrices proin eget ipsum</h5>
+					<p>Claritas est etiam processus dynaicus qui sequitur mutationem consuetudium lectorum. Mirum est notare quam </p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img">
+						<img src="images/icon7.png" alt=""/>
+					</div>
+					<h5>Ultrices proin eget ipsum</h5>
+					<p>Claritas est etiam processus dynaicus qui sequitur mutationem consuetudium lectorum. Mirum est notare quam </p>
+				</div>
+				<div class="clearfix"> </div>				
+			</div>
+		</div>
+	</div>
+	<!--//services-->
+	<div class="slid">
+		<div class="container">
+			<div class="wow fadeInRight animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+				<h3>A wonderful designs has takenpossession but also the leap into electronic pesetting industry</h3>
+			</div>
+		</div>
+	</div>	
+	<!--products-->
+	<div class="features" id="products">
+		<div class="container">			
+			<div class="title">
+				<h3>Our Products</h3>
+				<p>A wonderful designs has takenpossession but also the leap into electronic pesetting industry  It was popularised in the 1960s with the release </p>
+			</div>
+			<div class="features-info">
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure class="effect-bubba">
+						<img src="images/img2.jpg" alt=""/>
+						<figcaption>
+							<h4>Enimet pulvinar posuere</h4>
+							<p>In sit amet sapien eros Integer dolore magna aliqua</p>	
+						</figcaption>			
+					</figure>		
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure class="effect-bubba">
+						<img src="images/img7.jpg" alt=""/>
+						<figcaption>
+							<h4>Enimet pulvinar posuere</h4>
+							<p>In sit amet sapien eros Integer dolore magna aliqua</p>	
+						</figcaption>		
+					</figure>		
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure class="effect-bubba">
+						<img src="images/img4.jpg" alt=""/>
+						<figcaption>
+							<h4>Enimet pulvinar posuere</h4>
+							<p>In sit amet sapien eros Integer dolore magna aliqua</p>	
+						</figcaption>			
+					</figure>		
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure class="effect-bubba">
+						<img src="images/img5.jpg" alt=""/>
+						<figcaption>
+							<h4>Enimet pulvinar posuere</h4>
+							<p>In sit amet sapien eros Integer dolore magna aliqua</p>	
+						</figcaption>			
+					</figure>		
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure class="effect-bubba">
+						<img src="images/img6.jpg" alt=""/>
+						<figcaption>
+							<h4>Enimet pulvinar posuere</h4>
+							<p>In sit amet sapien eros Integer dolore magna aliqua</p>	
+						</figcaption>			
+					</figure>		
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure class="effect-bubba">
+						<img src="images/img3.jpg" alt=""/>
+						<figcaption>
+							<h4>Enimet pulvinar posuere</h4>
+							<p>In sit amet sapien eros Integer dolore magna aliqua</p>	
+						</figcaption>		
+					</figure>		
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+	<!--//products-->
+	<!--team-->
+	<div class="team" id="team">
+		<div class="container">
+			<div class="title">
+				<h3>Meet Our Team</h3>
+				<p>A wonderful designs has takenpossession but also the leap into electronic pesetting industry  It was popularised in the 1960s with the release </p>
+			</div>
+			<!-- flex-slider -->
+			<div class="work-bottom">
+				<div class="nbs-flexisel-container"><div class="nbs-flexisel-inner"><ul id="flexiselDemo1" class="nbs-flexisel-ul" style="left: -285px; display: block;">																																		
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/img8.jpg" alt="">
+							<div class="team-bottom">
+								<h4>MARK SIMMY</h4>
+								<p>Fusce et nibh eget odio cursus consectetur</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/img9.jpg" alt="">
+							<div class="team-bottom">
+								<h4>MARK SIMMY</h4>
+								<p>Fusce et nibh eget odio cursus consectetur</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/img10.jpg" alt="">
+							<div class="team-bottom">
+								<h4>ALAN SMITH</h4>
+								<p>Fusce et nibh eget odio cursus consectetur</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/img11.jpg" alt="">
+							<div class="team-bottom">
+								<h4>CAROL ADAMS</h4>
+								<p>Fusce et nibh eget odio cursus consectetur</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/img12.jpg" alt="">
+							<div class="team-bottom">
+								<h4>MARK SIMMY</h4>
+								<p>Fusce et nibh eget odio cursus consectetur</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/img13.jpg" alt="">
+							<div class="team-bottom">
+								<h4>MARK SIMMY</h4>
+								<p>Fusce et nibh eget odio cursus consectetur</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/img14.jpg" alt="">
+							<div class="team-bottom">
+								<h4>ALAN SMITH</h4>
+								<p>Fusce et nibh eget odio cursus consectetur</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/img15.jpg" alt="">
+							<div class="team-bottom">
+								<h4>CAROL ADAMS</h4>
+								<p>Fusce et nibh eget odio cursus consectetur</p>
+							</div>
+						</div>
+					</li>
+				</ul>
+				<div class="nbs-flexisel-nav-left" style="top: 138px;"></div><div class="nbs-flexisel-nav-right" style="top: 138px;"></div></div></div>
+					<script type="text/javascript">
+							$(window).load(function() {
+								$("#flexiselDemo1").flexisel({
+									visibleItems: 4,
+									animationSpeed: 1000,
+									autoPlay: true,
+									autoPlaySpeed: 3000,    		
+									pauseOnHover: true,
+									enableResponsiveBreakpoints: true,
+									responsiveBreakpoints: { 
+										portrait: { 
+											changePoint:480,
+											visibleItems: 2
+										}, 
+										landscape: { 
+											changePoint:640,
+											visibleItems: 3
+										},
+										tablet: { 
+											changePoint:768,
+											visibleItems: 3
+										}
+									}
+								});
+								
+							});
+					</script>
+					<script type="text/javascript" src="js/jquery.flexisel.js"></script>				
+					<!-- //flex-slider -->	
+			</div>
+		</div>
+	</div>	
+	<!--//team-->
+	<!--contact-->
+	<div class="contact" id="contact">
+		<div class="container">
+			<div class="title">
+				<h3>Contact Us</h3>
+				<p>A wonderful designs has takenpossession but also the leap into electronic pesetting industry  It was popularised in the 1960s with the release </p>
+			</div>
+			<div class="contact-grids">
+				<div class="col-md-4 address wow fadeInLeft animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<h4>Contact info</h4>
+					<p class="cnt-p">Lorem ipsum dolor sit amet, consectetur adipisicing elit,sheets containing Lorem Ipsum passages sed do </p>
+					<p>Eiusmod Tempor inc</p>
+					<p>9560 St Dolor,London</p>
+					<p>Telephone : +2 800 544 6035</p>
+					<p>FAX : +1 800 889 4444</p>
+					<p>Email : <a href="mailto:example@mail.com">mail@example.com</a></p>
+				</div>
+				<div class="col-md-8 contact-form wow fadeInRight animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<h4>Contact form</h4>
+					<form>
+						<div class="col-md-6 contact-form-info">
+							<input type="text" value="Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Name';}" required="">
+							<input type="email" value="Email" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email';}" required="">
+							<input type="text" value="Telephone" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Telephone';}" required="">
+						</div>
+						<div class="col-md-6 contact-form-info">
+							<textarea type="text" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Message...';}" required="">Message...</textarea>							
+						</div>
+						<div class="clearfix"> </div>
+						<input type="submit" value="Submit">
+					</form>
+				</div>
+				<div class="clearfix"> </div>	
+			</div>
+		</div>
+		<div class="map">
+			<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d158858.182370726!2d-0.10159865000000001!3d51.52864165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a00baf21de75%3A0x52963a5addd52a99!2sLondon%2C+UK!5e0!3m2!1sen!2sin!4v1433744055746"></iframe>
+		</div>
+	</div>
+	<!--//contact-->
+	<!--footer-->
+	<div class="footer">
+		<div class="container">			
+				<p class="wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">Copyright &copy; 2015.Company name All rights reserved.<a target="_blank" href="http://guantaow.taobao.com/">厚朴网络淘宝店</a><a target="_blank" href="http://www.moobnn.com">网页模板</a></p>
+			<div class="clearfix"> </div>
+		</div>	
+	</div>
+	<!--//footer-->
+	<!--smooth-scrolling-of-move-up-->
+	<script type="text/javascript">
+			$(document).ready(function() {
+				/*
+				var defaults = {
+					containerID: 'toTop', // fading element id
+					containerHoverID: 'toTopHover', // fading element hover id
+					scrollSpeed: 1200,
+					easingType: 'linear' 
+				};
+				*/
+				
+				$().UItoTop({ easingType: 'easeOutQuart' });
+				
+			});
+		</script>
+		<a href="#" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+	<!--//smooth-scrolling-of-move-up-->
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/bootstrap.js"> </script>
+</body>
+</html>

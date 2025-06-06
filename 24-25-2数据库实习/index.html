@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生宿舍报修系统</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tools"></i> 学生宿舍报修系统</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-home"></i> 首页</a></li>
+                    <li><a href="#"><i class="fas fa-plus-circle"></i> 提交报修</a></li>
+                    <li><a href="#"><i class="fas fa-history"></i> 报修记录</a></li>
+                    <li><a href="#"><i class="fas fa-user"></i> 个人中心</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="welcome-section">
+                <h2>欢迎使用宿舍报修系统</h2>
+                <p>请选择您需要的服务：</p>
+                <div class="action-buttons">
+                    <a href="#" class="btn primary"><i class="fas fa-plus"></i> 提交新报修</a>
+                    <a href="#" class="btn secondary"><i class="fas fa-list"></i> 查看报修记录</a>
+                </div>
+            </section>
+
+            <section class="repair-form">
+                <h2><i class="fas fa-wrench"></i> 报修申请</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="student-id">学号</label>
+                        <input type="text" id="student-id" placeholder="请输入您的学号" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" placeholder="请输入您的姓名" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="building">宿舍楼</label>
+                        <select id="building" required>
+                            <option value="">请选择宿舍楼</option>
+                            <option value="1">1号楼</option>
+                            <option value="2">2号楼</option>
+                            <option value="3">3号楼</option>
+                            <option value="4">4号楼</option>
+                            <option value="5">5号楼</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="room">房间号</label>
+                        <input type="text" id="room" placeholder="例如：101" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="repair-type">报修类型</label>
+                        <select id="repair-type" required>
+                            <option value="">请选择报修类型</option>
+                            <option value="electricity">电力问题</option>
+                            <option value="plumbing">管道问题</option>
+                            <option value="furniture">家具损坏</option>
+                            <option value="network">网络问题</option>
+                            <option value="other">其他问题</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">问题描述</label>
+                        <textarea id="description" rows="5" placeholder="请详细描述您遇到的问题..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="photo">上传照片</label>
+                        <input type="file" id="photo" accept="image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contact">联系电话</label>
+                        <input type="tel" id="contact" placeholder="请输入您的联系电话" required>
+                    </div>
+                    
+                    <button type="submit" class="btn primary"><i class="fas fa-paper-plane"></i> 提交报修</button>
+                </form>
+            </section>
+
+            <section class="status-section">
+                <h2><i class="fas fa-clipboard-list"></i> 报修状态</h2>
+                <div class="status-cards">
+                    <div class="status-card pending">
+                        <h3>待处理</h3>
+                        <p class="count">5</p>
+                        <a href="#" class="btn small">查看详情 <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    
+                    <div class="status-card in-progress">
+                        <h3>处理中</h3>
+                        <p class="count">3</p>
+                        <a href="#" class="btn small">查看详情 <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    
+                    <div class="status-card completed">
+                        <h3>已完成</h3>
+                        <p class="count">12</p>
+                        <a href="#" class="btn small">查看详情 <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 学生宿舍报修系统 | @23508014班</p>
+            <p>联系电话：123-456789 | 邮箱：repair@school.edu</p>
+        </footer>
+    </div>
+</body>
+</html>

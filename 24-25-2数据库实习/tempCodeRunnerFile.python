@@ -1,0 +1,8 @@
+import sys
+from pyqt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("社团信息管理系统")
+        self.setGeometry(100, 100, 600, 400)
